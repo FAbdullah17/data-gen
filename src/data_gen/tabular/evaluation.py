@@ -11,11 +11,11 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from scipy import stats
-from sklearn.metrics import mutual_info_score
 
 
 def _ks_complement(
-    real_col: pd.Series, synthetic_col: pd.Series  # type: ignore[type-arg]
+    real_col: pd.Series,
+    synthetic_col: pd.Series,  # type: ignore[type-arg]
 ) -> float:
     """Kolmogorov-Smirnov complement for a single numeric column.
 
@@ -29,11 +29,12 @@ def _ks_complement(
         real_col.dropna().values,
         synthetic_col.dropna().values,
     )
-    return 1.0 - statistic
+    return float(1.0 - statistic)
 
 
 def _cs_test(
-    real_col: pd.Series, synthetic_col: pd.Series  # type: ignore[type-arg]
+    real_col: pd.Series,
+    synthetic_col: pd.Series,  # type: ignore[type-arg]
 ) -> float:
     """Chi-Squared test complement for a single categorical column.
 
@@ -53,11 +54,12 @@ def _cs_test(
     real_freq_nonzero = np.where(real_freq == 0, 1e-10, real_freq)
     chi2 = np.sum((synth_freq - real_freq) ** 2 / real_freq_nonzero)
 
-    return max(0.0, 1.0 - chi2)
+    return float(max(0.0, 1.0 - chi2))
 
 
 def _column_shape_score(
-    real_col: pd.Series, synthetic_col: pd.Series  # type: ignore[type-arg]
+    real_col: pd.Series,
+    synthetic_col: pd.Series,  # type: ignore[type-arg]
 ) -> float:
     """Score how well the synthetic column matches the shape of the real one.
 
@@ -73,21 +75,19 @@ def _column_shape_score(
             synthetic_col.max(),
         ]
         diffs = []
-        for r, s in zip(real_stats, synth_stats):
+        for r, s in zip(real_stats, synth_stats, strict=False):
             if r == 0 and s == 0:
                 diffs.append(0.0)
             elif r == 0:
                 diffs.append(1.0)
             else:
                 diffs.append(min(abs(r - s) / (abs(r) + 1e-10), 1.0))
-        return 1.0 - np.mean(diffs)
+        return float(1.0 - np.mean(diffs))
 
     return _cs_test(real_col, synthetic_col)
 
 
-def _correlation_similarity(
-    real_df: pd.DataFrame, synthetic_df: pd.DataFrame
-) -> float:
+def _correlation_similarity(real_df: pd.DataFrame, synthetic_df: pd.DataFrame) -> float:
     """Compare correlation matrices of real vs synthetic numeric columns.
 
     Returns a value between 0 and 1, where 1 means identical correlations.
@@ -139,7 +139,9 @@ def evaluate_tabular(
     >>> print(f"Overall quality: {metrics['overall_score']:.2%}")
     """
     if not isinstance(real_data, pd.DataFrame):
-        raise TypeError(f"real_data must be a DataFrame, got {type(real_data).__name__}")
+        raise TypeError(
+            f"real_data must be a DataFrame, got {type(real_data).__name__}"
+        )
     if not isinstance(synthetic_data, pd.DataFrame):
         raise TypeError(
             f"synthetic_data must be a DataFrame, got {type(synthetic_data).__name__}"

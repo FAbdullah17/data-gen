@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-import pytest
-import pandas as pd
+from typing import Any
+
 import numpy as np
+import pandas as pd
+import pytest
 
 from data_gen.tabular.ctgan import CTGANSynthesizer
 from data_gen.tabular.utils import generate_from_schema
@@ -14,12 +16,14 @@ from data_gen.tabular.utils import generate_from_schema
 def sample_df() -> pd.DataFrame:
     """Create a small sample DataFrame for testing."""
     rng = np.random.default_rng(42)
-    return pd.DataFrame({
-        "age": rng.integers(18, 65, size=50),
-        "salary": rng.uniform(30000, 150000, size=50).round(2),
-        "department": rng.choice(["Engineering", "Sales", "HR"], size=50),
-        "active": rng.choice([True, False], size=50),
-    })
+    return pd.DataFrame(
+        {
+            "age": rng.integers(18, 65, size=50),
+            "salary": rng.uniform(30000, 150000, size=50).round(2),
+            "department": rng.choice(["Engineering", "Sales", "HR"], size=50),
+            "active": rng.choice([True, False], size=50),
+        }
+    )
 
 
 class TestCTGANSynthesizerInit:
@@ -97,7 +101,7 @@ class TestSchemaGeneration:
         assert all(s.startswith("user_") for s in result["name"])
 
     def test_multi_column_schema(self) -> None:
-        schema = {
+        schema: dict[str, dict[str, Any]] = {
             "id": {"type": "int", "min": 1, "max": 9999},
             "score": {"type": "float", "min": 0, "max": 100},
             "status": {"type": "category", "values": ["pass", "fail"]},

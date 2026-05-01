@@ -18,21 +18,25 @@ from data_gen.tabular.evaluation import (
 @pytest.fixture
 def real_df() -> pd.DataFrame:
     rng = np.random.default_rng(42)
-    return pd.DataFrame({
-        "age": rng.integers(18, 65, size=100),
-        "salary": rng.uniform(30000, 150000, size=100),
-        "dept": rng.choice(["A", "B", "C"], size=100),
-    })
+    return pd.DataFrame(
+        {
+            "age": rng.integers(18, 65, size=100),
+            "salary": rng.uniform(30000, 150000, size=100),
+            "dept": rng.choice(["A", "B", "C"], size=100),
+        }
+    )
 
 
 @pytest.fixture
 def synthetic_df() -> pd.DataFrame:
     rng = np.random.default_rng(99)
-    return pd.DataFrame({
-        "age": rng.integers(18, 65, size=100),
-        "salary": rng.uniform(30000, 150000, size=100),
-        "dept": rng.choice(["A", "B", "C"], size=100),
-    })
+    return pd.DataFrame(
+        {
+            "age": rng.integers(18, 65, size=100),
+            "salary": rng.uniform(30000, 150000, size=100),
+            "dept": rng.choice(["A", "B", "C"], size=100),
+        }
+    )
 
 
 class TestKSComplement:
@@ -115,7 +119,7 @@ class TestEvaluateTabular:
 
     def test_rejects_non_dataframe(self) -> None:
         with pytest.raises(TypeError):
-            evaluate_tabular([1, 2], pd.DataFrame({"a": [1]}))
+            evaluate_tabular([1, 2], pd.DataFrame({"a": [1]}))  # type: ignore[arg-type]
 
     def test_no_common_columns(self) -> None:
         a = pd.DataFrame({"x": [1]})

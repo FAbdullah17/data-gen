@@ -66,7 +66,8 @@ def apply_instructions(
         filtered = pd.concat([filtered, extra_filtered], ignore_index=True)
         retries += 1
 
-    return filtered.head(num_needed).reset_index(drop=True)
+    result: pd.DataFrame = filtered.head(num_needed).reset_index(drop=True)
+    return result
 
 
 def generate_from_schema(

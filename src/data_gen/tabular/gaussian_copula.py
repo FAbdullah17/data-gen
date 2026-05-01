@@ -41,7 +41,8 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
 
     Schema-only mode (no fitting required):
 
-    >>> synthetic = synth.generate(500, schema={"age": {"type": "int", "min": 18, "max": 65}})
+    >>> schema = {"age": {"type": "int", "min": 18, "max": 65}}
+    >>> synthetic = synth.generate(500, schema=schema)
     """
 
     _lifecycle = "fit"
@@ -77,21 +78,21 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
         require_sdv()
 
         if not isinstance(data, pd.DataFrame):
-            raise TypeError(
-                f"Expected pandas DataFrame, got {type(data).__name__}"
-            )
+            raise TypeError(f"Expected pandas DataFrame, got {type(data).__name__}")
         if data.empty:
             raise ValueError("Cannot fit on an empty DataFrame.")
 
         from sdv.metadata import SingleTableMetadata
-        from sdv.single_table import GaussianCopulaSynthesizer as SDV_GC
+        from sdv.single_table import (
+            GaussianCopulaSynthesizer as SdvGaussianCopula,
+        )
 
         self._sample_data = data.copy()
 
         self._metadata = SingleTableMetadata()
         self._metadata.detect_from_dataframe(data)
 
-        self._synthesizer = SDV_GC(
+        self._synthesizer = SdvGaussianCopula(
             metadata=self._metadata,
             **kwargs,
         )
@@ -155,7 +156,9 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
         self._logger.info(
             "Generating %d synthetic rows via GaussianCopula...", num_samples
         )
-        synthetic = self._synthesizer.sample(num_rows=num_samples, **kwargs)
+        synthetic: pd.DataFrame = self._synthesizer.sample(
+            num_rows=num_samples, **kwargs
+        )
 
         if instructions:
             self._logger.info("Applying instructions: %s", instructions)
@@ -165,9 +168,7 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
 
         return synthetic
 
-    def evaluate(
-        self, real_data: Any, synthetic_data: Any
-    ) -> dict[str, Any]:
+    def evaluate(self, real_data: Any, synthetic_data: Any) -> dict[str, Any]:
         """Evaluate synthetic data quality against original.
 
         Parameters

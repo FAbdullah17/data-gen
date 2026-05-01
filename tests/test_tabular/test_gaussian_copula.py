@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 from data_gen.tabular.gaussian_copula import GaussianCopulaSynthesizer
 
@@ -13,11 +13,13 @@ from data_gen.tabular.gaussian_copula import GaussianCopulaSynthesizer
 def sample_df() -> pd.DataFrame:
     """Create a small sample DataFrame for testing."""
     rng = np.random.default_rng(42)
-    return pd.DataFrame({
-        "age": rng.integers(18, 65, size=30),
-        "salary": rng.uniform(30000, 150000, size=30).round(2),
-        "department": rng.choice(["Engineering", "Sales", "HR"], size=30),
-    })
+    return pd.DataFrame(
+        {
+            "age": rng.integers(18, 65, size=30),
+            "salary": rng.uniform(30000, 150000, size=30).round(2),
+            "department": rng.choice(["Engineering", "Sales", "HR"], size=30),
+        }
+    )
 
 
 class TestGaussianCopulaInit:
