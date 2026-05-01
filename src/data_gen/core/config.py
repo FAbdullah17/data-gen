@@ -51,10 +51,8 @@ def load_config(source: str | Path | dict[str, Any]) -> dict[str, Any]:
     path = Path(source)
     if not path.exists():
         raise FileNotFoundError(f"Config file not found: {path}")
-    if not path.suffix.lower() in {".yaml", ".yml"}:
-        raise ValueError(
-            f"Config file must be .yaml or .yml, got: {path.suffix!r}"
-        )
+    if path.suffix.lower() not in {".yaml", ".yml"}:
+        raise ValueError(f"Config file must be .yaml or .yml, got: {path.suffix!r}")
 
     with open(path, encoding="utf-8") as fh:
         data = yaml.safe_load(fh)

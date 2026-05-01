@@ -48,7 +48,7 @@ def set_seed(seed: int) -> None:
         raise ValueError(f"Seed must be non-negative, got {seed}")
 
     random.seed(seed)
-    np.random.seed(seed)  # noqa: NPY002
+    np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)

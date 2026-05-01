@@ -42,7 +42,7 @@ class BaseSynthesizer(ABC):
 
     # Lifecycle methods
 
-    def process(self, data: Any, **kwargs: Any) -> "BaseSynthesizer":
+    def process(self, data: Any, **kwargs: Any) -> BaseSynthesizer:
         """Primary entry point that routes data to the correct lifecycle method.
 
         Reads the ``_lifecycle`` class attribute to determine whether to
@@ -83,7 +83,7 @@ class BaseSynthesizer(ABC):
             f"'prepare' to use process()."
         )
 
-    def prepare(self, data: Any, **kwargs: Any) -> "BaseSynthesizer":
+    def prepare(self, data: Any, **kwargs: Any) -> BaseSynthesizer:
         """Load, preprocess, cache, or set up resources.
 
         Subclasses override this when no learning occurs — only loading,
@@ -111,7 +111,7 @@ class BaseSynthesizer(ABC):
             f"This module uses fit() to learn from sample data."
         )
 
-    def fit(self, data: Any, **kwargs: Any) -> "BaseSynthesizer":
+    def fit(self, data: Any, **kwargs: Any) -> BaseSynthesizer:
         """Learn, train, or estimate parameters from sample data.
 
         Subclasses override this when genuine learning occurs — training
@@ -216,7 +216,7 @@ class BaseSynthesizer(ABC):
         self._logger.info("Saved %s to %s", self.__class__.__name__, path)
 
     @classmethod
-    def load(cls, path: str | Path) -> "BaseSynthesizer":
+    def load(cls, path: str | Path) -> BaseSynthesizer:
         """Load a previously saved synthesizer from disk.
 
         Parameters
@@ -238,7 +238,7 @@ class BaseSynthesizer(ABC):
         if not path.exists():
             raise FileNotFoundError(f"No saved synthesizer found at {path}")
         with open(path, "rb") as fh:
-            instance = pickle.load(fh)  # noqa: S301
+            instance = pickle.load(fh)
         if not isinstance(instance, cls):
             raise TypeError(
                 f"Loaded object is {type(instance).__name__}, "
