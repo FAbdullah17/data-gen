@@ -110,7 +110,7 @@ class TimeSeriesSynthesizer(BaseSynthesizer):
 
         self._metadata = SingleTableMetadata()
         self._metadata.detect_from_dataframe(data)
-        
+
         self._metadata.update_column(column_name=sequence_key, sdtype="id")
         self._metadata.set_sequence_key(column_name=sequence_key)
 
@@ -188,7 +188,7 @@ class TimeSeriesSynthesizer(BaseSynthesizer):
         self._check_is_fitted()
 
         self._logger.info("Generating %d synthetic sequences via PAR...", num_samples)
-        
+
         # In SDV PAR, num_sequences determines how many sequence groups to generate
         synthetic: pd.DataFrame = self._synthesizer.sample(
             num_sequences=num_samples, **kwargs
@@ -219,8 +219,8 @@ class TimeSeriesSynthesizer(BaseSynthesizer):
         from data_gen.timeseries.evaluation import evaluate_timeseries
 
         return evaluate_timeseries(
-            real_data, 
-            synthetic_data, 
+            real_data,
+            synthetic_data,
             sequence_key=self.sequence_key,
-            metadata=self._metadata
+            metadata=self._metadata,
         )

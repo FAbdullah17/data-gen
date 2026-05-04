@@ -36,7 +36,8 @@ def generate_parametric_sequences(
         Length of each sequence.
     features : dict[str, dict[str, Any]]
         Dictionary specifying the features for each timestep.
-        Example: ``{"value": {"type": "float", "min": 0, "max": 100}, "state": {"type": "category", "values": ["A", "B"]}}``
+        Example: ``{"value": {"type": "float", "min": 0, "max": 100},
+        "state": {"type": "category", "values": ["A", "B"]}}``
     sequence_key : str
         Column name for the sequence identifier.
     seed : int | None

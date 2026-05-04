@@ -32,7 +32,8 @@ def _sequence_autocorrelation(
 
 
 def _mean_std_similarity(
-    real_col: pd.Series, synthetic_col: pd.Series  # type: ignore[type-arg]
+    real_col: pd.Series,
+    synthetic_col: pd.Series,  # type: ignore[type-arg]
 ) -> float:
     """Compare mean and standard deviation similarity (0 to 1)."""
     r_mean = real_col.mean()
@@ -89,13 +90,18 @@ def evaluate_timeseries(
         - ``sdv_quality`` (optional): SDV's built-in quality report if available
     """
     if not isinstance(real_data, pd.DataFrame):
-        raise TypeError(f"real_data must be a DataFrame, got {type(real_data).__name__}")
+        raise TypeError(
+            f"real_data must be a DataFrame, got {type(real_data).__name__}"
+        )
     if not isinstance(synthetic_data, pd.DataFrame):
         raise TypeError(
             f"synthetic_data must be a DataFrame, got {type(synthetic_data).__name__}"
         )
 
-    if sequence_key not in real_data.columns or sequence_key not in synthetic_data.columns:
+    if (
+        sequence_key not in real_data.columns
+        or sequence_key not in synthetic_data.columns
+    ):
         raise ValueError(f"sequence_key '{sequence_key}' missing from data.")
 
     numeric_cols = real_data.select_dtypes(include=np.number).columns.tolist()
@@ -112,14 +118,14 @@ def evaluate_timeseries(
     for col in common_cols:
         r_col = real_data[col]
         s_col = synthetic_data[col]
-        
+
         # Distribution similarity
         dist_scores[col] = _mean_std_similarity(r_col, s_col)
-        
+
         # Autocorrelation similarity
         r_ac = _sequence_autocorrelation(real_data, sequence_key, col)
         s_ac = _sequence_autocorrelation(synthetic_data, sequence_key, col)
-        
+
         # Scale difference to [0, 1] where 1 is identical
         ac_diff = abs(r_ac - s_ac)
         autocorr_scores[col] = float(max(0.0, 1.0 - ac_diff))

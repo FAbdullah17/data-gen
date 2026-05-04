@@ -17,21 +17,25 @@ from data_gen.timeseries.evaluation import (
 @pytest.fixture
 def real_ts_df() -> pd.DataFrame:
     rng = np.random.default_rng(42)
-    return pd.DataFrame({
-        "seq_id": np.repeat([0, 1], 10),
-        "value1": rng.uniform(0, 10, size=20),
-        "value2": rng.normal(5, 2, size=20),
-    })
+    return pd.DataFrame(
+        {
+            "seq_id": np.repeat([0, 1], 10),
+            "value1": rng.uniform(0, 10, size=20),
+            "value2": rng.normal(5, 2, size=20),
+        }
+    )
 
 
 @pytest.fixture
 def synth_ts_df() -> pd.DataFrame:
     rng = np.random.default_rng(99)
-    return pd.DataFrame({
-        "seq_id": np.repeat([0, 1], 10),
-        "value1": rng.uniform(0, 10, size=20),
-        "value2": rng.normal(5, 2, size=20),
-    })
+    return pd.DataFrame(
+        {
+            "seq_id": np.repeat([0, 1], 10),
+            "value1": rng.uniform(0, 10, size=20),
+            "value2": rng.normal(5, 2, size=20),
+        }
+    )
 
 
 class TestAutocorrelation:
@@ -81,7 +85,9 @@ class TestEvaluateTimeseries:
         with pytest.raises(TypeError):
             evaluate_timeseries([1, 2], pd.DataFrame(), sequence_key="id")  # type: ignore[arg-type]
 
-    def test_missing_sequence_key(self, real_ts_df: pd.DataFrame, synth_ts_df: pd.DataFrame) -> None:
+    def test_missing_sequence_key(
+        self, real_ts_df: pd.DataFrame, synth_ts_df: pd.DataFrame
+    ) -> None:
         with pytest.raises(ValueError, match="missing from data"):
             evaluate_timeseries(real_ts_df, synth_ts_df, sequence_key="wrong_key")
 

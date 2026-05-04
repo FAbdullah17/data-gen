@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 from data_gen.timeseries.par import TimeSeriesSynthesizer
 from data_gen.timeseries.utils import generate_parametric_sequences
@@ -17,12 +17,14 @@ def sample_timeseries_df() -> pd.DataFrame:
     # 3 sequences of length 5
     num_seqs = 3
     seq_len = 5
-    return pd.DataFrame({
-        "sensor_id": np.repeat(np.arange(num_seqs), seq_len),
-        "city": np.repeat(["NY", "SF", "LA"], seq_len),
-        "temperature": rng.uniform(20, 80, size=num_seqs * seq_len),
-        "pressure": rng.uniform(1000, 1020, size=num_seqs * seq_len),
-    })
+    return pd.DataFrame(
+        {
+            "sensor_id": np.repeat(np.arange(num_seqs), seq_len),
+            "city": np.repeat(["NY", "SF", "LA"], seq_len),
+            "temperature": rng.uniform(20, 80, size=num_seqs * seq_len),
+            "pressure": rng.uniform(1000, 1020, size=num_seqs * seq_len),
+        }
+    )
 
 
 class TestTimeSeriesSynthesizerInit:
@@ -56,12 +58,16 @@ class TestTimeSeriesSynthesizerValidation:
         with pytest.raises(ValueError, match="empty DataFrame"):
             synth.fit(pd.DataFrame(), sequence_key="id")
 
-    def test_fit_requires_sequence_key(self, sample_timeseries_df: pd.DataFrame) -> None:
+    def test_fit_requires_sequence_key(
+        self, sample_timeseries_df: pd.DataFrame
+    ) -> None:
         synth = TimeSeriesSynthesizer()
         with pytest.raises(ValueError, match="sequence_key is required"):
             synth.fit(sample_timeseries_df)
 
-    def test_fit_rejects_missing_sequence_key(self, sample_timeseries_df: pd.DataFrame) -> None:
+    def test_fit_rejects_missing_sequence_key(
+        self, sample_timeseries_df: pd.DataFrame
+    ) -> None:
         synth = TimeSeriesSynthesizer()
         with pytest.raises(ValueError, match="not found in data"):
             synth.fit(sample_timeseries_df, sequence_key="missing_id")
