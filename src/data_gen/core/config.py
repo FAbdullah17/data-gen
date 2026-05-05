@@ -59,8 +59,7 @@ def load_config(source: str | Path | dict[str, Any]) -> dict[str, Any]:
 
     if not isinstance(data, dict):
         raise ValueError(
-            f"Expected YAML file to contain a mapping (dict), "
-            f"got {type(data).__name__}"
+            f"Expected YAML file to contain a mapping (dict), " f"got {type(data).__name__}"
         )
     return data
 

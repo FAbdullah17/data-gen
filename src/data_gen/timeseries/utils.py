@@ -51,9 +51,7 @@ def generate_parametric_sequences(
     rng = np.random.default_rng(seed)
     total_rows = num_sequences * sequence_length
 
-    data: dict[str, Any] = {
-        sequence_key: np.repeat(np.arange(num_sequences), sequence_length)
-    }
+    data: dict[str, Any] = {sequence_key: np.repeat(np.arange(num_sequences), sequence_length)}
 
     for col_name, spec in features.items():
         col_type = spec.get("type", "float")

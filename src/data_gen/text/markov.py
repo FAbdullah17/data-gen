@@ -84,9 +84,7 @@ class MarkovTextGenerator(BaseSynthesizer):
         tokens = [t for t in re.split(r"(\s+)", data) if t.strip()]
 
         if len(tokens) <= self.order:
-            raise ValueError(
-                f"Text too short ({len(tokens)} tokens) for order {self.order}."
-            )
+            raise ValueError(f"Text too short ({len(tokens)} tokens) for order {self.order}.")
 
         self._chain.clear()
         self._starts.clear()
@@ -95,7 +93,7 @@ class MarkovTextGenerator(BaseSynthesizer):
         for i in range(len(tokens) - self.order):
             state = tuple(tokens[i : i + self.order])
             next_token = tokens[i + self.order]
-            
+
             if state not in self._chain:
                 self._chain[state] = []
             self._chain[state].append(next_token)
@@ -171,12 +169,12 @@ class MarkovTextGenerator(BaseSynthesizer):
                 next_token = rng.choice(possible_next)
                 output_tokens.append(next_token)
 
-                # Stop if we hit a sentence-ending token and have at least some words
-                # To prevent single-word sentences, we ensure length is > order + some margin
-                if len(output_tokens) > self.order + 3 and next_token.endswith((".", "!", "?")):
-                    # We probabilistically stop to allow for multi-sentence outputs
-                    if rng.random() < 0.5:
-                        break
+                if (
+                    len(output_tokens) > self.order + 3
+                    and next_token.endswith((".", "!", "?"))
+                    and rng.random() < 0.5
+                ):
+                    break
 
                 current_state = tuple(output_tokens[-self.order :])
 

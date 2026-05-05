@@ -87,9 +87,7 @@ class TestCorrelationSimilarity:
 
 
 class TestEvaluateTabular:
-    def test_returns_all_keys(
-        self, real_df: pd.DataFrame, synthetic_df: pd.DataFrame
-    ) -> None:
+    def test_returns_all_keys(self, real_df: pd.DataFrame, synthetic_df: pd.DataFrame) -> None:
         result = evaluate_tabular(real_df, synthetic_df)
         assert "ks_complement" in result
         assert "cs_test" in result
@@ -97,16 +95,12 @@ class TestEvaluateTabular:
         assert "correlation_similarity" in result
         assert "overall_score" in result
 
-    def test_scores_in_range(
-        self, real_df: pd.DataFrame, synthetic_df: pd.DataFrame
-    ) -> None:
+    def test_scores_in_range(self, real_df: pd.DataFrame, synthetic_df: pd.DataFrame) -> None:
         result = evaluate_tabular(real_df, synthetic_df)
         assert 0.0 <= result["overall_score"] <= 1.0
         assert 0.0 <= result["correlation_similarity"] <= 1.0
 
-    def test_numeric_cols_in_ks(
-        self, real_df: pd.DataFrame, synthetic_df: pd.DataFrame
-    ) -> None:
+    def test_numeric_cols_in_ks(self, real_df: pd.DataFrame, synthetic_df: pd.DataFrame) -> None:
         result = evaluate_tabular(real_df, synthetic_df)
         assert "age" in result["ks_complement"]
         assert "salary" in result["ks_complement"]

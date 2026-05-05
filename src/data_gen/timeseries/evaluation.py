@@ -20,9 +20,7 @@ def _autocorrelation(series: pd.Series, lag: int = 1) -> float:  # type: ignore[
     return 0.0 if np.isnan(val) else float(val)
 
 
-def _sequence_autocorrelation(
-    df: pd.DataFrame, sequence_key: str, col: str, lag: int = 1
-) -> float:
+def _sequence_autocorrelation(df: pd.DataFrame, sequence_key: str, col: str, lag: int = 1) -> float:
     """Calculate average autocorrelation across all sequences for a column."""
     autocorrs = []
     for _, seq_df in df.groupby(sequence_key):
@@ -90,24 +88,15 @@ def evaluate_timeseries(
         - ``sdv_quality`` (optional): SDV's built-in quality report if available
     """
     if not isinstance(real_data, pd.DataFrame):
-        raise TypeError(
-            f"real_data must be a DataFrame, got {type(real_data).__name__}"
-        )
+        raise TypeError(f"real_data must be a DataFrame, got {type(real_data).__name__}")
     if not isinstance(synthetic_data, pd.DataFrame):
-        raise TypeError(
-            f"synthetic_data must be a DataFrame, got {type(synthetic_data).__name__}"
-        )
+        raise TypeError(f"synthetic_data must be a DataFrame, got {type(synthetic_data).__name__}")
 
-    if (
-        sequence_key not in real_data.columns
-        or sequence_key not in synthetic_data.columns
-    ):
+    if sequence_key not in real_data.columns or sequence_key not in synthetic_data.columns:
         raise ValueError(f"sequence_key '{sequence_key}' missing from data.")
 
     numeric_cols = real_data.select_dtypes(include=np.number).columns.tolist()
-    common_cols = [
-        c for c in numeric_cols if c in synthetic_data.columns and c != sequence_key
-    ]
+    common_cols = [c for c in numeric_cols if c in synthetic_data.columns and c != sequence_key]
 
     if not common_cols:
         raise ValueError("No common numeric columns between real and synthetic data.")
@@ -143,9 +132,7 @@ def evaluate_timeseries(
         try:
             from sdv.evaluation.single_table import evaluate_quality
 
-            sdv_report = evaluate_quality(
-                real_data, synthetic_data, metadata, verbose=False
-            )
+            sdv_report = evaluate_quality(real_data, synthetic_data, metadata, verbose=False)
             result["sdv_quality_score"] = sdv_report.get_score()
         except Exception:
             pass

@@ -58,16 +58,12 @@ class TestTimeSeriesSynthesizerValidation:
         with pytest.raises(ValueError, match="empty DataFrame"):
             synth.fit(pd.DataFrame(), sequence_key="id")
 
-    def test_fit_requires_sequence_key(
-        self, sample_timeseries_df: pd.DataFrame
-    ) -> None:
+    def test_fit_requires_sequence_key(self, sample_timeseries_df: pd.DataFrame) -> None:
         synth = TimeSeriesSynthesizer()
         with pytest.raises(ValueError, match="sequence_key is required"):
             synth.fit(sample_timeseries_df)
 
-    def test_fit_rejects_missing_sequence_key(
-        self, sample_timeseries_df: pd.DataFrame
-    ) -> None:
+    def test_fit_rejects_missing_sequence_key(self, sample_timeseries_df: pd.DataFrame) -> None:
         synth = TimeSeriesSynthesizer()
         with pytest.raises(ValueError, match="not found in data"):
             synth.fit(sample_timeseries_df, sequence_key="missing_id")

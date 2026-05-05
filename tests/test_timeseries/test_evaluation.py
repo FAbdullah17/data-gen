@@ -67,17 +67,13 @@ class TestMeanStdSimilarity:
 
 
 class TestEvaluateTimeseries:
-    def test_returns_all_keys(
-        self, real_ts_df: pd.DataFrame, synth_ts_df: pd.DataFrame
-    ) -> None:
+    def test_returns_all_keys(self, real_ts_df: pd.DataFrame, synth_ts_df: pd.DataFrame) -> None:
         result = evaluate_timeseries(real_ts_df, synth_ts_df, sequence_key="seq_id")
         assert "mean_std_similarity" in result
         assert "autocorr_similarity" in result
         assert "overall_score" in result
 
-    def test_scores_in_range(
-        self, real_ts_df: pd.DataFrame, synth_ts_df: pd.DataFrame
-    ) -> None:
+    def test_scores_in_range(self, real_ts_df: pd.DataFrame, synth_ts_df: pd.DataFrame) -> None:
         result = evaluate_timeseries(real_ts_df, synth_ts_df, sequence_key="seq_id")
         assert 0.0 <= result["overall_score"] <= 1.0
 

@@ -12,7 +12,6 @@ from typing import Any
 
 from data_gen.core.base import BaseSynthesizer
 
-
 BUILTIN_TEMPLATES = {
     "reviews": [
         "The {adjective} {noun} {verb} my expectations.",
@@ -66,16 +65,26 @@ class TemplateTextGenerator(BaseSynthesizer):
 
     def _extract_vocab(self, text: str) -> None:
         """Naive vocabulary extraction.
-        
+
         Since we have zero dependencies (no spaCy/NLTK), we use very basic
         heuristics to guess part of speech.
         """
         words = [w.lower() for w in re.findall(r"\b[a-zA-Z]{3,}\b", text)]
-        
+
         for word in words:
-            if word in {"the", "and", "with", "this", "that", "for", "was", "is", "are"}:
+            if word in {
+                "the",
+                "and",
+                "with",
+                "this",
+                "that",
+                "for",
+                "was",
+                "is",
+                "are",
+            }:
                 continue
-                
+
             if word.endswith(("ly", "wise")):
                 self._vocab["adverb"].append(word)
             elif word.endswith(("ed", "ing", "s")):
@@ -85,7 +94,7 @@ class TemplateTextGenerator(BaseSynthesizer):
             else:
                 # Default to noun if it doesn't match above rules
                 self._vocab["noun"].append(word)
-                
+
         # Deduplicate
         for k in self._vocab:
             self._vocab[k] = list(set(self._vocab[k]))
@@ -117,7 +126,7 @@ class TemplateTextGenerator(BaseSynthesizer):
 
         if not data.strip():
             raise ValueError("Fitted on empty text. Cannot extract vocabulary.")
-        
+
         self._extract_vocab(data)
 
         self.is_fitted = True
@@ -174,7 +183,7 @@ class TemplateTextGenerator(BaseSynthesizer):
                 raise ValueError(
                     "Must provide either 'instructions' (category name) or 'templates' list."
                 )
-            
+
             # Exact match category from instructions
             category = instructions.lower()
             if category in BUILTIN_TEMPLATES:
@@ -186,14 +195,14 @@ class TemplateTextGenerator(BaseSynthesizer):
                 )
 
         assert templates is not None
-        
+
         generated = []
         for _ in range(num_samples):
             template = rng.choice(templates)
-            
+
             # Find all placeholders like {noun}, {adjective}
             placeholders = re.findall(r"\{([a-zA-Z]+)\}", template)
-            
+
             replacements = {}
             for p in placeholders:
                 p_lower = p.lower()
@@ -203,12 +212,12 @@ class TemplateTextGenerator(BaseSynthesizer):
                     replacements[p] = f"[{p}]"
                 else:
                     replacements[p] = rng.choice(vocab_list)
-                
+
             filled = template.format(**replacements)
             # Basic capitalization rule for sentences
             if filled:
                 filled = filled[0].upper() + filled[1:]
-            
+
             generated.append(filled)
 
         self._logger.info("Generated %d templated sequences.", num_samples)
