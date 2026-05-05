@@ -54,26 +54,44 @@ def generate_parametric_sequences(
     data: dict[str, Any] = {sequence_key: np.repeat(np.arange(num_sequences), sequence_length)}
 
     for col_name, spec in features.items():
-        col_type = spec.get("type", "float")
+        if "type" not in spec:
+            raise ValueError(
+                f"Feature '{col_name}' missing 'type'. "
+                f'Example: {{"type": "float", "min": 0.0, "max": 1.0}}'
+            )
+        col_type = spec["type"]
 
-        if col_type == "int":
-            low = spec.get("min", 0)
-            high = spec.get("max", 100)
-            data[col_name] = rng.integers(low, high + 1, size=total_rows)
+        if col_type in ("int", "float"):
+            if "min" not in spec or "max" not in spec:
+                raise ValueError(
+                    f"Feature '{col_name}' of type '{col_type}' requires 'min' and 'max'. "
+                    f'Example: {{"type": "{col_type}", "min": 0, "max": 100}}'
+                )
+            low = spec["min"]
+            high = spec["max"]
+            if low > high:
+                raise ValueError(f"Feature '{col_name}' has min > max.")
 
-        elif col_type == "float":
-            low = spec.get("min", 0.0)
-            high = spec.get("max", 1.0)
-            data[col_name] = rng.uniform(low, high, size=total_rows)
+            if col_type == "int":
+                data[col_name] = rng.integers(int(low), int(high) + 1, size=total_rows)
+            else:
+                data[col_name] = rng.uniform(float(low), float(high), size=total_rows)
 
         elif col_type == "category":
-            values = spec.get("values", ["A", "B", "C"])
-            data[col_name] = rng.choice(values, size=total_rows)
+            if "values" not in spec or not spec["values"]:
+                raise ValueError(
+                    f"Feature '{col_name}' of type 'category' requires 'values' list. "
+                    f'Example: {{"type": "category", "values": ["A", "B"]}}'
+                )
+            data[col_name] = rng.choice(spec["values"], size=total_rows)
 
         elif col_type == "bool":
             data[col_name] = rng.choice([True, False], size=total_rows)
 
         else:
-            data[col_name] = rng.standard_normal(total_rows)
+            raise ValueError(
+                f"Unsupported type '{col_type}' for feature '{col_name}'. "
+                "Supported types: 'int', 'float', 'category', 'bool'."
+            )
 
     return pd.DataFrame(data)

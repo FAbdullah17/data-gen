@@ -105,10 +105,30 @@ class TestParametricGeneration:
 
     def test_parametric_via_generate(self) -> None:
         synth = TimeSeriesSynthesizer()
-        features = {"x": {"type": "float"}}
+        features = {"x": {"type": "float", "min": 0.0, "max": 1.0}}
         result = synth.generate(num_samples=2, sequence_length=3, features=features)
         assert len(result) == 6
         assert synth.is_fitted is False
+
+    def test_parametric_validation_missing_type(self) -> None:
+        features = {"x": {"min": 0, "max": 10}}
+        with pytest.raises(ValueError, match="missing 'type'"):
+            generate_parametric_sequences(1, 5, features)
+
+    def test_parametric_validation_missing_min_max(self) -> None:
+        features = {"x": {"type": "int", "min": 0}}
+        with pytest.raises(ValueError, match="requires 'min' and 'max'"):
+            generate_parametric_sequences(1, 5, features)
+
+    def test_parametric_validation_missing_values(self) -> None:
+        features = {"x": {"type": "category"}}
+        with pytest.raises(ValueError, match="requires 'values' list"):
+            generate_parametric_sequences(1, 5, features)
+
+    def test_parametric_validation_min_greater_than_max(self) -> None:
+        features = {"x": {"type": "float", "min": 10.0, "max": 5.0}}
+        with pytest.raises(ValueError, match="min > max"):
+            generate_parametric_sequences(1, 5, features)
 
 
 class TestProcessRouting:
