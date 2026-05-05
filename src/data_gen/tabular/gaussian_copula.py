@@ -153,18 +153,12 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
 
         self._check_is_fitted()
 
-        self._logger.info(
-            "Generating %d synthetic rows via GaussianCopula...", num_samples
-        )
-        synthetic: pd.DataFrame = self._synthesizer.sample(
-            num_rows=num_samples, **kwargs
-        )
+        self._logger.info("Generating %d synthetic rows via GaussianCopula...", num_samples)
+        synthetic: pd.DataFrame = self._synthesizer.sample(num_rows=num_samples, **kwargs)
 
         if instructions:
             self._logger.info("Applying instructions: %s", instructions)
-            synthetic = apply_instructions(
-                synthetic, instructions, num_samples, self._synthesizer
-            )
+            synthetic = apply_instructions(synthetic, instructions, num_samples, self._synthesizer)
 
         return synthetic
 

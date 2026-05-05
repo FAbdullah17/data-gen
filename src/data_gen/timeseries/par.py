@@ -190,9 +190,7 @@ class TimeSeriesSynthesizer(BaseSynthesizer):
         self._logger.info("Generating %d synthetic sequences via PAR...", num_samples)
 
         # In SDV PAR, num_sequences determines how many sequence groups to generate
-        synthetic: pd.DataFrame = self._synthesizer.sample(
-            num_sequences=num_samples, **kwargs
-        )
+        synthetic: pd.DataFrame = self._synthesizer.sample(num_sequences=num_samples, **kwargs)
 
         if instructions:
             self._logger.warning(

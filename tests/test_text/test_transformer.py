@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import sys
-import pytest
 from unittest.mock import MagicMock, patch
 
-from data_gen.text.transformer import TransformerTextGenerator
+import pytest
 
+from data_gen.text.transformer import TransformerTextGenerator
 
 # Create mock modules
 mock_torch = MagicMock()
@@ -34,7 +33,7 @@ class TestTransformerTextGeneratorPrepare:
         with patch.dict("sys.modules", {"torch": mock_torch, "transformers": mock_transformers}):
             gen = TransformerTextGenerator(device="cpu")
             gen.prepare()
-            
+
             assert gen.is_prepared
             assert gen._context is None
             mock_pipeline_func.assert_called()
@@ -44,7 +43,7 @@ class TestTransformerTextGeneratorPrepare:
         with patch.dict("sys.modules", {"torch": mock_torch, "transformers": mock_transformers}):
             gen = TransformerTextGenerator(device="cpu")
             gen.prepare(data="Style context.")
-            
+
             assert gen.is_prepared
             assert gen._context == "Style context."
 
@@ -62,13 +61,13 @@ class TestTransformerTextGeneratorGenerate:
             mock_pipe_instance = MagicMock()
             mock_pipe_instance.return_value = [{"generated_text": "Mock output"}]
             mock_pipeline_func.return_value = mock_pipe_instance
-            
+
             gen = TransformerTextGenerator(device="cpu")
             gen.prepare()
-            
+
             # Reset call count before generate
             mock_pipe_instance.reset_mock()
-            
+
             generated = gen.generate(2, instructions="Test", seed=42)
             assert len(generated) == 2
             assert generated[0] == "Mock output"

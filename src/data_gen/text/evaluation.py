@@ -18,7 +18,7 @@ def _tokenize(text: str | list[str]) -> list[str]:
         text = " ".join(str(t) for t in text)
     if not isinstance(text, str):
         return []
-    
+
     # lowercase and remove non-alphanumeric
     words = re.findall(r"\b\w+\b", text.lower())
     return words

@@ -36,9 +36,7 @@ class BaseSynthesizer(ABC):
         self.config: dict[str, Any] = config or {}
         self.is_fitted: bool = False
         self.is_prepared: bool = False
-        self._logger: logging.Logger = logging.getLogger(
-            f"data_gen.{self.__class__.__name__}"
-        )
+        self._logger: logging.Logger = logging.getLogger(f"data_gen.{self.__class__.__name__}")
 
     # Lifecycle methods
 
@@ -241,8 +239,7 @@ class BaseSynthesizer(ABC):
             instance = pickle.load(fh)
         if not isinstance(instance, cls):
             raise TypeError(
-                f"Loaded object is {type(instance).__name__}, "
-                f"expected {cls.__name__}"
+                f"Loaded object is {type(instance).__name__}, " f"expected {cls.__name__}"
             )
         return instance
 
@@ -274,17 +271,9 @@ class BaseSynthesizer(ABC):
 
     def __repr__(self) -> str:
         status = (
-            "fitted"
-            if self.is_fitted
-            else "prepared"
-            if self.is_prepared
-            else "not initialized"
+            "fitted" if self.is_fitted else "prepared" if self.is_prepared else "not initialized"
         )
-        config_str = (
-            ", ".join(f"{k}={v!r}" for k, v in self.config.items())
-            if self.config
-            else ""
-        )
+        config_str = ", ".join(f"{k}={v!r}" for k, v in self.config.items()) if self.config else ""
         return (
             f"{self.__class__.__name__}("
             f"status={status}"

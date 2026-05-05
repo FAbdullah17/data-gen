@@ -96,7 +96,7 @@ class TransformerTextGenerator(BaseSynthesizer):
                 self._context = context_data
             else:
                 raise TypeError(f"Expected str or list[str], got {type(context_data).__name__}")
-            
+
             self._logger.info("Cached context/style reference (%d chars).", len(self._context))
         else:
             self._context = None
@@ -166,7 +166,7 @@ class TransformerTextGenerator(BaseSynthesizer):
         ]
 
         self._logger.info("Generating %d sequences...", num_samples)
-        
+
         generated_texts = []
         for _ in range(num_samples):
             # Pass as list of messages for chat template formatting
@@ -179,7 +179,7 @@ class TransformerTextGenerator(BaseSynthesizer):
                 return_full_text=False,
                 **kwargs,
             )
-            
+
             # pipeline returns list of dicts: [{'generated_text': '...'}]
             text = output[0]["generated_text"].strip()
             generated_texts.append(text)

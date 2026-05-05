@@ -139,13 +139,9 @@ def evaluate_tabular(
     >>> print(f"Overall quality: {metrics['overall_score']:.2%}")
     """
     if not isinstance(real_data, pd.DataFrame):
-        raise TypeError(
-            f"real_data must be a DataFrame, got {type(real_data).__name__}"
-        )
+        raise TypeError(f"real_data must be a DataFrame, got {type(real_data).__name__}")
     if not isinstance(synthetic_data, pd.DataFrame):
-        raise TypeError(
-            f"synthetic_data must be a DataFrame, got {type(synthetic_data).__name__}"
-        )
+        raise TypeError(f"synthetic_data must be a DataFrame, got {type(synthetic_data).__name__}")
 
     common_cols = [c for c in real_data.columns if c in synthetic_data.columns]
     if not common_cols:
@@ -183,9 +179,7 @@ def evaluate_tabular(
         try:
             from sdv.evaluation.single_table import evaluate_quality
 
-            sdv_report = evaluate_quality(
-                real_data, synthetic_data, metadata, verbose=False
-            )
+            sdv_report = evaluate_quality(real_data, synthetic_data, metadata, verbose=False)
             result["sdv_quality_score"] = sdv_report.get_score()
         except Exception:
             pass
