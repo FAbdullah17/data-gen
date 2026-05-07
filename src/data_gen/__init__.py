@@ -17,11 +17,9 @@ Time-series (requires ``pip install data-gen[timeseries]``):
 
 >>> from data_gen.timeseries import TimeSeriesSynthesizer  # doctest: +SKIP
 
-Image (augmentor works out of the box, DCGAN needs
-``pip install data-gen[image]``):
+Image (requires ``pip install data-gen[image]``):
 
 >>> from data_gen.image import ImageAugmentor  # doctest: +SKIP
->>> from data_gen.image import DCGANSynthesizer  # doctest: +SKIP
 
 Text (markov/template work out of the box, transformer needs
 ``pip install data-gen[text]``):

@@ -1,25 +1,26 @@
 """Image augmentor synthesizer.
 
-Provides fast, CPU-bound image variations using Pillow and NumPy.
-Zero deep-learning dependencies required.
+Provides high-performance, CPU-bound image variations using Albumentations
+and OpenCV. Optimized for large-scale synthetic generation.
 """
 
 from __future__ import annotations
 
 import math
-import os
 import random
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 import numpy as np
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image
 
 from data_gen.core.base import BaseSynthesizer
+from data_gen.image.utils import require_albumentations
 
 
 class ImageAugmentor(BaseSynthesizer):
-    """Generates synthetic image variations using classical augmentation.
+    """Generates synthetic image variations using Albumentations.
 
     Parameters
     ----------
@@ -50,6 +51,49 @@ class ImageAugmentor(BaseSynthesizer):
             raise ValueError(f"intensity must be 'light', 'medium', or 'heavy', got '{intensity}'")
         self.intensity = intensity
         self._images: list[Image.Image] = []
+        self._pipeline = None
+
+    def _build_pipeline(self, seed: int | None = None) -> Any:
+        require_albumentations()
+        import albumentations as A  # noqa: N812
+
+        if seed is not None:
+            random.seed(seed)
+            np.random.seed(seed)
+
+        if self.intensity == "light":
+            return A.Compose(
+                [
+                    A.HorizontalFlip(p=0.5),
+                    A.RandomBrightnessContrast(p=0.3, brightness_limit=0.1, contrast_limit=0.1),
+                    A.Rotate(limit=15, p=0.3),
+                ]
+            )
+        elif self.intensity == "medium":
+            return A.Compose(
+                [
+                    A.HorizontalFlip(p=0.5),
+                    A.RandomBrightnessContrast(p=0.5, brightness_limit=0.2, contrast_limit=0.2),
+                    A.Rotate(limit=30, p=0.5),
+                    A.GaussNoise(std_range=(0.01, 0.05), p=0.3),
+                    A.Blur(blur_limit=3, p=0.3),
+                    A.Affine(scale=(0.9, 1.1), translate_percent=(-0.1, 0.1), p=0.3),
+                ]
+            )
+        else:  # heavy
+            return A.Compose(
+                [
+                    A.HorizontalFlip(p=0.5),
+                    A.VerticalFlip(p=0.2),
+                    A.RandomBrightnessContrast(p=0.7, brightness_limit=0.3, contrast_limit=0.3),
+                    A.Rotate(limit=45, p=0.7),
+                    A.GaussNoise(std_range=(0.02, 0.1), p=0.5),
+                    A.Blur(blur_limit=5, p=0.4),
+                    A.ElasticTransform(alpha=1, sigma=50, alpha_affine=50, p=0.5),
+                    A.GridDistortion(p=0.5),
+                    A.CoarseDropout(max_holes=8, max_height=16, max_width=16, p=0.3),
+                ]
+            )
 
     def prepare(self, data: Any, **kwargs: Any) -> ImageAugmentor:
         """Load and cache images for augmentation.
@@ -69,11 +113,11 @@ class ImageAugmentor(BaseSynthesizer):
         """
         self._images.clear()
 
-        if isinstance(data, (str, Path)):
+        if isinstance(data, str | Path):
             path = Path(data)
             if path.is_dir():
                 # Load all valid images from directory
-                for file_path in path.iterdir():
+                for file_path in sorted(path.iterdir()):
                     if file_path.is_file():
                         try:
                             img = Image.open(file_path).convert("RGB")
@@ -92,7 +136,7 @@ class ImageAugmentor(BaseSynthesizer):
             for item in data:
                 if isinstance(item, Image.Image):
                     self._images.append(item.convert("RGB").copy())
-                elif isinstance(item, (str, Path)):
+                elif isinstance(item, str | Path):
                     img = Image.open(item).convert("RGB")
                     self._images.append(img.copy())
                     img.close()
@@ -135,34 +179,20 @@ class ImageAugmentor(BaseSynthesizer):
             List of augmented PIL Images.
         """
         self._check_is_prepared()
-        rng = random.Random(seed)
+        if self._pipeline is None or seed is not None:
+            self._pipeline = self._build_pipeline(seed=seed)
 
-        if instructions:
-            pass
-        
-        # Number of ops to apply based on intensity
-        op_counts = {
-            "light": (1, 2),
-            "medium": (2, 4),
-            "heavy": (4, 7),
-        }
-        min_ops, max_ops = op_counts[self.intensity]
-
-        all_ops = ["rotate", "flip", "crop", "blur", "noise", "brightness", "color"]
-
-        results = []
+        results: list[Image.Image] = []
         for i in range(num_samples):
             # Sequentially select source images to ensure balanced augmentation
-            # This is mathematically superior to random choice for dataset distribution
-            base_img = self._images[i % len(self._images)].copy()
+            base_img = self._images[i % len(self._images)]
+            img_arr = np.array(base_img)
 
-            # Randomly select operations
-            num_ops = rng.randint(min_ops, max_ops)
-            ops_to_apply = rng.choices(all_ops, k=num_ops)
+            assert self._pipeline is not None
 
-            # Apply
-            augmented = self.augment([base_img], ops=ops_to_apply, seed=rng.randint(0, 999999))[0]
-            results.append(augmented)
+            # Apply Albumentations pipeline
+            augmented_arr = self._pipeline(image=img_arr)["image"]
+            results.append(Image.fromarray(augmented_arr))
 
         self._logger.info("Generated %d augmented variations.", num_samples)
         return results
@@ -173,91 +203,38 @@ class ImageAugmentor(BaseSynthesizer):
         ops: list[str] | None = None,
         seed: int | None = None,
     ) -> list[Image.Image]:
-        """Apply a specific sequence of operations to images.
+        """Apply augmentation to images manually.
+
+        Note: The `ops` parameter is deprecated with the Albumentations backend.
+        This method will apply the standard intensity-based pipeline.
 
         Parameters
         ----------
         images : list[Image.Image]
             Images to augment.
         ops : list[str] | None
-            List of operation names to apply sequentially.
-            Supported: rotate, flip, crop, blur, noise, brightness, color, pattern, elastic.
-            If None, applies a random preset sequence.
+            Ignored in this version. Uses configured intensity pipeline.
         seed : int | None
-            Random seed for op parameters.
+            Random seed for the  pipeline.
 
         Returns
         -------
         list[Image.Image]
             Augmented images.
         """
-        rng = random.Random(seed)
-        np_rng = np.random.default_rng(seed)
+        if ops is not None:
+            self._logger.warning(
+                "The 'ops' parameter is deprecated. Using configured intensity pipeline."
+            )
 
-        if ops is None:
-            # If no ops specified, apply a robust random sequence for diversity
-            all_ops = ["rotate", "flip", "crop", "blur", "noise", "brightness", "color"]
-            ops = rng.choices(all_ops, k=rng.randint(2, 4))
+        pipeline = self._build_pipeline(seed=seed)
 
         augmented = []
         for img in images:
-            img = img.copy()
-            for op in ops:
-                op = op.lower()
-                if op == "rotate":
-                    angle = rng.uniform(-30, 30)
-                    # Expand to True so we don't crop corners, or False to keep size
-                    img = img.rotate(angle, resample=Image.Resampling.BILINEAR, expand=False)
-                elif op == "flip":
-                    if rng.random() > 0.5:
-                        img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-                    else:
-                        img = img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-                elif op == "crop":
-                    w, h = img.size
-                    crop_w, crop_h = int(w * 0.8), int(h * 0.8)
-                    x = rng.randint(0, w - crop_w)
-                    y = rng.randint(0, h - crop_h)
-                    img = img.crop((x, y, x + crop_w, y + crop_h)).resize(
-                        (w, h), resample=Image.Resampling.LANCZOS
-                    )
-                elif op == "blur":
-                    radius = rng.uniform(0.5, 2.5)
-                    img = img.filter(ImageFilter.GaussianBlur(radius))
-                elif op == "noise":
-                    arr = np.array(img, dtype=np.float32)
-                    noise = np_rng.normal(scale=rng.uniform(10, 30), size=arr.shape)
-                    arr = np.clip(arr + noise, 0, 255).astype(np.uint8)
-                    img = Image.fromarray(arr)
-                elif op == "brightness":
-                    factor = rng.uniform(0.5, 1.5)
-                    enhancer = ImageEnhance.Brightness(img)
-                    img = enhancer.enhance(factor)
-                elif op == "color":
-                    factor = rng.uniform(0.5, 1.5)
-                    color_enhancer = ImageEnhance.Color(img)
-                    img = color_enhancer.enhance(factor)
-                elif op == "pattern":
-                    # Simple grid overlay pattern
-                    arr = np.array(img)
-                    step = rng.randint(10, 40)
-                    arr[::step, :] = 255
-                    arr[:, ::step] = 255
-                    img = Image.fromarray(arr)
-                elif op == "elastic":
-                    # Simple proxy for elastic: wavy distortion via numpy roll
-                    arr = np.array(img)
-                    freq = rng.uniform(0.05, 0.2)
-                    amp = rng.uniform(2, 10)
-                    for i in range(arr.shape[0]):
-                        shift = int(amp * math.sin(2 * math.pi * i * freq))
-                        arr[i] = np.roll(arr[i], shift, axis=0)
-                    img = Image.fromarray(arr)
-                else:
-                    self._logger.warning("Unsupported augmentation operation: %s", op)
-                    
-            augmented.append(img)
-            
+            img_arr = np.array(img)
+            augmented_arr = pipeline(image=img_arr)["image"]
+            augmented.append(Image.fromarray(augmented_arr))
+
         return augmented
 
     def save_images(self, images: Sequence[Image.Image], path: str | Path) -> None:
@@ -272,11 +249,11 @@ class ImageAugmentor(BaseSynthesizer):
         """
         out_dir = Path(path)
         out_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for i, img in enumerate(images):
             out_path = out_dir / f"augmented_{i:04d}.png"
             img.save(out_path)
-            
+
         self._logger.info("Saved %d images to %s", len(images), out_dir)
 
     def show_grid(self, images: Sequence[Image.Image], max_images: int = 16) -> None:
@@ -303,7 +280,7 @@ class ImageAugmentor(BaseSynthesizer):
         cols = min(4, n)
         rows = math.ceil(n / cols)
 
-        fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 3))
+        _fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 3))
         if n == 1:
             axes = np.array([axes])
         axes = axes.flatten()

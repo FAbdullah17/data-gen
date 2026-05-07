@@ -6,7 +6,8 @@ pixel statistics, SSIM (Structural Similarity Index), and diversity scores.
 
 from __future__ import annotations
 
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 from PIL import Image
@@ -16,37 +17,35 @@ def _get_pixel_stats(images: Sequence[Image.Image]) -> dict[str, float]:
     """Calculate mean and std of pixel intensities."""
     if not images:
         return {"mean": 0.0, "std": 0.0}
-        
+
     means = []
     stds = []
     for img in images:
         arr = np.array(img.convert("RGB"), dtype=np.float32) / 255.0
         means.append(float(np.mean(arr)))
         stds.append(float(np.std(arr)))
-        
+
     return {"mean": float(np.mean(means)), "std": float(np.mean(stds))}
 
 
 def _calculate_ssim_proxy(img1: Image.Image, img2: Image.Image) -> float:
     """Calculate a simple proxy for SSIM using structural correlation.
-    
+
     This avoids requiring skimage or other large dependencies.
     """
     # Resize to small common size and grayscale to compare structure
     size = (32, 32)
     i1 = np.array(img1.convert("L").resize(size), dtype=np.float32)
     i2 = np.array(img2.convert("L").resize(size), dtype=np.float32)
-    
+
     mu1, mu2 = np.mean(i1), np.mean(i2)
     var1, var2 = np.var(i1), np.var(i2)
     covar = float(np.cov(i1.flatten(), i2.flatten())[0][1])
-    
+
     c1 = (0.01 * 255) ** 2
     c2 = (0.03 * 255) ** 2
-    
-    ssim = ((2 * mu1 * mu2 + c1) * (2 * covar + c2)) / (
-        (mu1 ** 2 + mu2 ** 2 + c1) * (var1 + var2 + c2)
-    )
+
+    ssim = ((2 * mu1 * mu2 + c1) * (2 * covar + c2)) / ((mu1**2 + mu2**2 + c1) * (var1 + var2 + c2))
     return float(ssim)
 
 
@@ -83,26 +82,31 @@ def evaluate_images(
     # 1. Pixel stats similarity
     r_stats = _get_pixel_stats(real_images)
     s_stats = _get_pixel_stats(synthetic_images)
-    
+
     mean_diff = abs(r_stats["mean"] - s_stats["mean"])
     std_diff = abs(r_stats["std"] - s_stats["std"])
     pixel_sim = max(0.0, 1.0 - (mean_diff + std_diff))
 
     # 2. Structural Similarity (Proxy)
     # Compare each synthetic image to the most similar real image
-    # (Warning: O(N*M) so we limit samples to 100 for performance while maintaining statistical validity)
+    # (Warning: O(N*M) so we limit samples to 100 for performance
+    # while maintaining statistical validity)
     max_samples = 100
-    
+
     # Use random state to ensure unbiased statistical sampling rather than just taking the first N
     rng = np.random.default_rng(42)
-    
+
     sample_synth = [
-        synthetic_images[i] for i in rng.choice(len(synthetic_images), min(len(synthetic_images), max_samples), replace=False)
+        synthetic_images[i]
+        for i in rng.choice(
+            len(synthetic_images), min(len(synthetic_images), max_samples), replace=False
+        )
     ]
     sample_real = [
-        real_images[i] for i in rng.choice(len(real_images), min(len(real_images), max_samples), replace=False)
+        real_images[i]
+        for i in rng.choice(len(real_images), min(len(real_images), max_samples), replace=False)
     ]
-    
+
     ssims = []
     for s_img in sample_synth:
         best_ssim = -1.0
@@ -111,7 +115,7 @@ def evaluate_images(
             if score > best_ssim:
                 best_ssim = score
         ssims.append(best_ssim)
-        
+
     ssim_score = float(np.mean(ssims)) if ssims else 0.0
 
     # 3. Diversity Score
