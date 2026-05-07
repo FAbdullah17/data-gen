@@ -7,10 +7,10 @@ Zero deep-learning dependencies required.
 from __future__ import annotations
 
 import math
-import os
 import random
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
@@ -69,7 +69,7 @@ class ImageAugmentor(BaseSynthesizer):
         """
         self._images.clear()
 
-        if isinstance(data, (str, Path)):
+        if isinstance(data, str | Path):
             path = Path(data)
             if path.is_dir():
                 # Load all valid images from directory
@@ -92,7 +92,7 @@ class ImageAugmentor(BaseSynthesizer):
             for item in data:
                 if isinstance(item, Image.Image):
                     self._images.append(item.convert("RGB").copy())
-                elif isinstance(item, (str, Path)):
+                elif isinstance(item, str | Path):
                     img = Image.open(item).convert("RGB")
                     self._images.append(img.copy())
                     img.close()
@@ -139,7 +139,7 @@ class ImageAugmentor(BaseSynthesizer):
 
         if instructions:
             pass
-        
+
         # Number of ops to apply based on intensity
         op_counts = {
             "light": (1, 2),
@@ -255,9 +255,9 @@ class ImageAugmentor(BaseSynthesizer):
                     img = Image.fromarray(arr)
                 else:
                     self._logger.warning("Unsupported augmentation operation: %s", op)
-                    
+
             augmented.append(img)
-            
+
         return augmented
 
     def save_images(self, images: Sequence[Image.Image], path: str | Path) -> None:
@@ -272,11 +272,11 @@ class ImageAugmentor(BaseSynthesizer):
         """
         out_dir = Path(path)
         out_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for i, img in enumerate(images):
             out_path = out_dir / f"augmented_{i:04d}.png"
             img.save(out_path)
-            
+
         self._logger.info("Saved %d images to %s", len(images), out_dir)
 
     def show_grid(self, images: Sequence[Image.Image], max_images: int = 16) -> None:
@@ -303,7 +303,7 @@ class ImageAugmentor(BaseSynthesizer):
         cols = min(4, n)
         rows = math.ceil(n / cols)
 
-        fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 3))
+        _fig, axes = plt.subplots(rows, cols, figsize=(cols * 3, rows * 3))
         if n == 1:
             axes = np.array([axes])
         axes = axes.flatten()

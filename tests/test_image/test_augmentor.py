@@ -51,7 +51,7 @@ class TestImageAugmentorPrepare:
     def test_prepare_directory(self, tmp_path: Path, sample_image: Image.Image) -> None:
         img_path = tmp_path / "test.png"
         sample_image.save(img_path)
-        
+
         aug = ImageAugmentor()
         aug.prepare(tmp_path)
         assert aug.is_prepared
@@ -68,7 +68,7 @@ class TestImageAugmentorGenerate:
         aug = ImageAugmentor(intensity="light")
         aug.prepare([sample_image])
         results = aug.generate(3, seed=42)
-        
+
         assert len(results) == 3
         assert isinstance(results[0], Image.Image)
         # Check image sizes remain same
@@ -95,6 +95,6 @@ class TestImageAugmentorSave:
     def test_save_images(self, tmp_path: Path, sample_image: Image.Image) -> None:
         aug = ImageAugmentor()
         aug.save_images([sample_image, sample_image], tmp_path)
-        
+
         saved_files = list(tmp_path.glob("*.png"))
         assert len(saved_files) == 2

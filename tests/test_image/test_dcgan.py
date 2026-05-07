@@ -2,15 +2,11 @@
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-from PIL import Image
 
 from data_gen.image.dcgan import DCGANSynthesizer
-
 
 # Mock torch and torchvision
 mock_torch = MagicMock()

@@ -6,7 +6,6 @@ Trains a DCGAN from scratch on a folder of images to generate novel images.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -52,10 +51,11 @@ class DCGANSynthesizer(BaseSynthesizer):
         self.latent_dim = latent_dim
         self.device = self._detect_device()
         self._generator: Any = None
-        
+
     def _detect_device(self) -> str:
         try:
             import torch
+
             if torch.cuda.is_available():
                 return "cuda"
             if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
@@ -72,7 +72,7 @@ class DCGANSynthesizer(BaseSynthesizer):
             def __init__(self, z_dim: int, img_size: int) -> None:
                 super().__init__()
                 self.init_size = img_size // 4
-                self.l1 = nn.Sequential(nn.Linear(z_dim, 128 * self.init_size ** 2))
+                self.l1 = nn.Sequential(nn.Linear(z_dim, 128 * self.init_size**2))
 
                 self.conv_blocks = nn.Sequential(
                     nn.BatchNorm2d(128),
@@ -99,11 +99,13 @@ class DCGANSynthesizer(BaseSynthesizer):
             def __init__(self, img_size: int) -> None:
                 super().__init__()
 
-                def discriminator_block(in_filters: int, out_filters: int, bn: bool = True) -> list[nn.Module]:
+                def discriminator_block(
+                    in_filters: int, out_filters: int, bn: bool = True
+                ) -> list[nn.Module]:
                     block: list[nn.Module] = [
                         nn.Conv2d(in_filters, out_filters, 3, 2, 1),
                         nn.LeakyReLU(0.2, inplace=True),
-                        nn.Dropout2d(0.25)
+                        nn.Dropout2d(0.25),
                     ]
                     if bn:
                         block.append(nn.BatchNorm2d(out_filters, 0.8))
@@ -116,10 +118,7 @@ class DCGANSynthesizer(BaseSynthesizer):
                     *discriminator_block(64, 128),
                 )
                 ds_size = img_size // 16
-                self.adv_layer = nn.Sequential(
-                    nn.Linear(128 * ds_size ** 2, 1),
-                    nn.Sigmoid()
-                )
+                self.adv_layer = nn.Sequential(nn.Linear(128 * ds_size**2, 1), nn.Sigmoid())
 
             def forward(self, img: Any) -> Any:
                 out = self.model(img)
@@ -153,9 +152,9 @@ class DCGANSynthesizer(BaseSynthesizer):
 
         import torch
         import torch.nn as nn
+        from rich.progress import BarColumn, Progress, TextColumn, TimeElapsedColumn
         from torch.utils.data import DataLoader
         from torchvision import datasets, transforms
-        from rich.progress import Progress, TextColumn, BarColumn, TimeElapsedColumn
 
         path = Path(str(data))
         if not path.is_dir():
@@ -166,10 +165,10 @@ class DCGANSynthesizer(BaseSynthesizer):
         lr = kwargs.get("lr", 0.0002)
 
         # ImageFolder expects a structure like path/class_name/image.png
-        # If the user just passed a folder of images, we need a wrapper or 
+        # If the user just passed a folder of images, we need a wrapper or
         # we can use a custom dataset. Let's build a quick custom dataset to be robust.
-        
-        class FlatImageFolder(torch.utils.data.Dataset): # type: ignore[name-defined]
+
+        class FlatImageFolder(torch.utils.data.Dataset):  # type: ignore[name-defined]
             def __init__(self, root: Path, transform: Any) -> None:
                 self.files = []
                 for p in root.iterdir():
@@ -182,14 +181,17 @@ class DCGANSynthesizer(BaseSynthesizer):
 
             def __getitem__(self, idx: int) -> Any:
                 from PIL import Image
+
                 img = Image.open(self.files[idx]).convert("RGB")
                 return self.transform(img), 0
 
-        transform = transforms.Compose([
-            transforms.Resize((self.image_size, self.image_size)),
-            transforms.ToTensor(),
-            transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-        ])
+        transform = transforms.Compose(
+            [
+                transforms.Resize((self.image_size, self.image_size)),
+                transforms.ToTensor(),
+                transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
+            ]
+        )
 
         try:
             # First try standard ImageFolder (if subdirectories exist)
@@ -213,10 +215,12 @@ class DCGANSynthesizer(BaseSynthesizer):
         generator, discriminator = self._build_networks()
 
         adversarial_loss = nn.BCELoss()
-        optimizer_G = torch.optim.Adam(generator.parameters(), lr=lr, betas=(0.5, 0.999))
-        optimizer_D = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
+        optimizer_g = torch.optim.Adam(generator.parameters(), lr=lr, betas=(0.5, 0.999))
+        optimizer_d = torch.optim.Adam(discriminator.parameters(), lr=lr, betas=(0.5, 0.999))
 
-        self._logger.info("Training DCGAN on %s (%d images, %d epochs)", self.device, len(dataset), epochs)
+        self._logger.info(
+            "Training DCGAN on %s (%d images, %d epochs)", self.device, len(dataset), epochs
+        )
 
         with Progress(
             TextColumn("[progress.description]{task.description}"),
@@ -227,29 +231,34 @@ class DCGANSynthesizer(BaseSynthesizer):
             task = progress.add_task("Training DCGAN...", total=epochs)
 
             for epoch in range(epochs):
-                for i, (imgs, _) in enumerate(dataloader):
+                for _i, (imgs, _) in enumerate(dataloader):
                     valid = torch.ones((imgs.size(0), 1), device=self.device, dtype=torch.float32)
                     fake = torch.zeros((imgs.size(0), 1), device=self.device, dtype=torch.float32)
 
                     real_imgs = imgs.to(self.device)
 
                     # Train Generator
-                    optimizer_G.zero_grad()
+                    optimizer_g.zero_grad()
                     z = torch.randn((imgs.size(0), self.latent_dim), device=self.device)
                     gen_imgs = generator(z)
                     g_loss = adversarial_loss(discriminator(gen_imgs), valid)
                     g_loss.backward()
-                    optimizer_G.step()
+                    optimizer_g.step()
 
                     # Train Discriminator
-                    optimizer_D.zero_grad()
+                    optimizer_d.zero_grad()
                     real_loss = adversarial_loss(discriminator(real_imgs), valid)
                     fake_loss = adversarial_loss(discriminator(gen_imgs.detach()), fake)
                     d_loss = (real_loss + fake_loss) / 2
                     d_loss.backward()
-                    optimizer_D.step()
+                    optimizer_d.step()
 
-                progress.update(task, advance=1, description=f"Epoch {epoch+1}/{epochs} [G: {g_loss.item():.3f}, D: {d_loss.item():.3f}]")
+                desc = f"Epoch {epoch+1}/{epochs} [G: {g_loss.item():.3f}, D: {d_loss.item():.3f}]"
+                progress.update(
+                    task,
+                    advance=1,
+                    description=desc,
+                )
 
         self._generator = generator
         self._generator.eval()
@@ -308,7 +317,7 @@ class DCGANSynthesizer(BaseSynthesizer):
                 b_size = min(batch_size, num_samples - i)
                 z = torch.randn((b_size, self.latent_dim), device=self.device)
                 gen_imgs = self._generator(z)
-                
+
                 # Denormalize [-1, 1] to [0, 1]
                 gen_imgs = gen_imgs * 0.5 + 0.5
                 gen_imgs = torch.clamp(gen_imgs, 0, 1)
@@ -324,7 +333,7 @@ class DCGANSynthesizer(BaseSynthesizer):
         self._check_is_fitted()
         require_torch_vision()
         import torch
-        
+
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         torch.save(self._generator.state_dict(), path)
@@ -335,11 +344,13 @@ class DCGANSynthesizer(BaseSynthesizer):
         """Load a trained generator state dictionary."""
         require_torch_vision()
         import torch
-        
+
         instance = cls()
         instance._generator, _ = instance._build_networks()
-            
-        instance._generator.load_state_dict(torch.load(path, map_location=instance.device, weights_only=True))
+
+        instance._generator.load_state_dict(
+            torch.load(path, map_location=instance.device, weights_only=True)
+        )
         instance._generator.eval()
         instance.is_fitted = True
         instance._logger.info("Loaded generator state from %s", path)
@@ -348,4 +359,5 @@ class DCGANSynthesizer(BaseSynthesizer):
     def evaluate(self, real_data: Any, synthetic_data: Any) -> dict[str, Any]:
         """Evaluate synthetic images against original."""
         from data_gen.image.evaluation import evaluate_images
+
         return evaluate_images(real_data, synthetic_data)

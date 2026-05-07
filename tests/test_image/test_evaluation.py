@@ -33,7 +33,7 @@ class TestImageEvaluation:
         stats_b = _get_pixel_stats([black_img])
         assert stats_b["mean"] == 0.0
         assert stats_b["std"] == 0.0
-        
+
         stats_w = _get_pixel_stats([white_img])
         assert stats_w["mean"] == 1.0
         assert stats_w["std"] == 0.0

@@ -14,4 +14,4 @@ def __getattr__(name: str) -> object:
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__all__ = ["ImageAugmentor", "DCGANSynthesizer"]
+__all__ = ["DCGANSynthesizer", "ImageAugmentor"]
