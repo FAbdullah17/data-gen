@@ -54,7 +54,8 @@ timeseries = [
     "sdv>=1.10",
 ]
 image = [
-    "torchvision>=0.15",
+    "albumentations>=1.4",
+    "opencv-python-headless>=4.9",
 ]
 text = [
     "transformers>=4.40",
