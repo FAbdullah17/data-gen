@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 
-def require_torch_vision() -> None:
-    """Raise a clear error if torch/torchvision are not installed."""
+def require_albumentations() -> None:
+    """Ensure albumentations and opencv are installed."""
     try:
-        import torch  # noqa: F401
-        import torchvision  # noqa: F401
+        import albumentations  # noqa: F401
+        import cv2  # noqa: F401
     except ImportError as exc:
         raise ImportError(
-            "torch and torchvision are required for DCGANSynthesizer. "
+            "albumentations and opencv-python are required for ImageAugmentor. "
             "Install them with: pip install data-gen[image]"
         ) from exc

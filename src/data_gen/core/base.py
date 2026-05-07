@@ -114,7 +114,7 @@ class BaseSynthesizer(ABC):
 
         Subclasses override this when genuine learning occurs — training
         neural networks, building transition tables, estimating distributions
-        (e.g. CTGANSynthesizer, MarkovTextGenerator, DCGANSynthesizer).
+        (e.g. CTGANSynthesizer, MarkovTextGenerator, ImageAugmentor).
 
         Parameters
         ----------
