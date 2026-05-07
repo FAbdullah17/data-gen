@@ -6,7 +6,6 @@ Validates the full lifecycle: data preparation -> synthesis -> evaluation.
 from pathlib import Path
 
 import numpy as np
-import pytest
 from PIL import Image
 
 from data_gen.image.augmentor import ImageAugmentor
@@ -37,7 +36,7 @@ def test_image_lifecycle_augmentor(tmp_path: Path) -> None:
 
     # 4. Evaluate
     metrics = evaluate_images(real_images, synthetic_images)
-    
+
     assert "overall_score" in metrics
     assert "pixel_stats_similarity" in metrics
     assert "ssim_score" in metrics

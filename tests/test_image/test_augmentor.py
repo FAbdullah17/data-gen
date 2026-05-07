@@ -76,19 +76,19 @@ class TestImageAugmentorGenerate:
 
 
 class TestImageAugmentorOps:
-    def test_augment_specific_ops(self, sample_image: Image.Image) -> None:
+    def test_augment_manual(self, sample_image: Image.Image) -> None:
         aug = ImageAugmentor()
-        # Flip, rotate, and color
-        results = aug.augment([sample_image], ops=["flip", "rotate", "color"], seed=42)
+        # Test manual augment call
+        results = aug.augment([sample_image], seed=42)
         assert len(results) == 1
         assert isinstance(results[0], Image.Image)
 
-    def test_augment_unsupported_op(self, sample_image: Image.Image) -> None:
+    def test_augment_deprecated_ops_warning(
+        self, sample_image: Image.Image, caplog: pytest.LogCaptureFixture
+    ) -> None:
         aug = ImageAugmentor()
-        # Should log warning and return image unchanged
-        results = aug.augment([sample_image], ops=["invalid_op"])
-        assert len(results) == 1
-        assert np.array_equal(np.array(results[0]), np.array(sample_image))
+        aug.augment([sample_image], ops=["flip"], seed=42)
+        assert "The 'ops' parameter is deprecated" in caplog.text
 
 
 class TestImageAugmentorSave:
