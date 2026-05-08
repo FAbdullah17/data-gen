@@ -1,10 +1,10 @@
-"""Gaussian Copula tabular synthesizer.
+"""CTGAN-based tabular synthesizer.
 
-Wraps SDV's ``GaussianCopulaSynthesizer`` to learn statistical
-distributions from sample DataFrames using copula-based modeling.
-Faster than CTGAN and works well with small samples (~10 rows).
+Wraps SDV's ``CTGANSynthesizer`` to learn deep conditional distributions
+from sample DataFrames and generate synthetic rows that preserve the
+original schema and statistical properties.
 
-Requires: ``pip install data-gen[tabular]``
+Requires: ``pip install syntharc[tabular]``
 """
 
 from __future__ import annotations
@@ -13,31 +13,35 @@ from typing import Any
 
 import pandas as pd
 
-from data_gen.core.base import BaseSynthesizer
-from data_gen.tabular.utils import (
+from syntharc.core.base import BaseSynthesizer
+from syntharc.tabular.utils import (
     apply_instructions,
     generate_from_schema,
     require_sdv,
 )
 
 
-class GaussianCopulaSynthesizer(BaseSynthesizer):
-    """Tabular synthesizer using Gaussian Copula via SDV.
+class CTGANSynthesizer(BaseSynthesizer):
+    """Tabular synthesizer using Conditional GAN via SDV.
 
-    Uses statistical copula modeling to capture correlations between
-    columns. Faster than CTGAN (no neural network training) and
-    effective with as few as 10 sample rows.
+    Learns deep conditional distributions from sample DataFrames
+    and generates synthetic rows preserving schema and statistics.
 
     Parameters
     ----------
+    epochs : int
+        Number of training epochs for the CTGAN model. SDV default is 300.
+        Lower values train faster, higher values improve quality.
+    batch_size : int
+        Training batch size. SDV default is 500.
     config : dict | None
         Additional configuration passed to BaseSynthesizer.
 
     Examples
     --------
-    >>> synth = GaussianCopulaSynthesizer()
+    >>> synth = CTGANSynthesizer(epochs=100)
     >>> synth.fit(sample_df)
-    >>> synthetic = synth.generate(500)
+    >>> synthetic = synth.generate(1000)
 
     Schema-only mode (no fitting required):
 
@@ -47,25 +51,32 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
 
     _lifecycle = "fit"
 
-    def __init__(self, config: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        epochs: int = 300,
+        batch_size: int = 500,
+        config: dict[str, Any] | None = None,
+    ) -> None:
         super().__init__(config=config)
+        self.epochs = epochs
+        self.batch_size = batch_size
         self._synthesizer: Any = None
         self._metadata: Any = None
         self._sample_data: pd.DataFrame | None = None
 
-    def fit(self, data: Any, **kwargs: Any) -> GaussianCopulaSynthesizer:
-        """Fit the Gaussian Copula model on a sample DataFrame.
+    def fit(self, data: Any, **kwargs: Any) -> CTGANSynthesizer:
+        """Train the CTGAN model on a sample DataFrame.
 
         Parameters
         ----------
         data : pd.DataFrame
-            Sample data to learn from. Works with as few as ~10 rows.
+            Sample data to learn from. Recommended: 100+ rows.
         **kwargs : Any
-            Extra keyword arguments passed to SDV's ``GaussianCopulaSynthesizer``.
+            Extra keyword arguments passed to SDV's ``CTGANSynthesizer``.
 
         Returns
         -------
-        GaussianCopulaSynthesizer
+        CTGANSynthesizer
             ``self``, for method chaining.
 
         Raises
@@ -83,29 +94,30 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
             raise ValueError("Cannot fit on an empty DataFrame.")
 
         from sdv.metadata import SingleTableMetadata
-        from sdv.single_table import (
-            GaussianCopulaSynthesizer as SdvGaussianCopula,
-        )
+        from sdv.single_table import CTGANSynthesizer as SdvCtgan
 
         self._sample_data = data.copy()
 
         self._metadata = SingleTableMetadata()
         self._metadata.detect_from_dataframe(data)
 
-        self._synthesizer = SdvGaussianCopula(
+        self._synthesizer = SdvCtgan(
             metadata=self._metadata,
+            epochs=self.epochs,
+            batch_size=self.batch_size,
             **kwargs,
         )
 
         self._logger.info(
-            "Fitting GaussianCopula on %d rows x %d columns...",
+            "Fitting CTGAN on %d rows x %d columns for %d epochs...",
             len(data),
             len(data.columns),
+            self.epochs,
         )
         self._synthesizer.fit(data)
 
         self.is_fitted = True
-        self._logger.info("GaussianCopula fitting complete.")
+        self._logger.info("CTGAN fitting complete.")
         return self
 
     def generate(
@@ -128,6 +140,7 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
             (e.g. ``"age > 18 and salary > 30000"``).
         schema : dict | None
             If provided, generates from schema without fitting.
+            Bypasses the trained model entirely.
         seed : int | None
             Random seed for reproducibility.
         **kwargs : Any
@@ -153,7 +166,7 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
 
         self._check_is_fitted()
 
-        self._logger.info("Generating %d synthetic rows via GaussianCopula...", num_samples)
+        self._logger.info("Generating %d synthetic rows via CTGAN...", num_samples)
         synthetic: pd.DataFrame = self._synthesizer.sample(num_rows=num_samples, **kwargs)
 
         if instructions:
@@ -177,6 +190,6 @@ class GaussianCopulaSynthesizer(BaseSynthesizer):
         dict[str, Any]
             Quality metrics from ``evaluate_tabular()``.
         """
-        from data_gen.tabular.evaluation import evaluate_tabular
+        from syntharc.tabular.evaluation import evaluate_tabular
 
         return evaluate_tabular(real_data, synthetic_data, metadata=self._metadata)

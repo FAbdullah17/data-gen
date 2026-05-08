@@ -1,7 +1,7 @@
 """Tabular Data Generation Example.
 
 This script demonstrates how to generate synthetic tabular data
-using the `data-gen` package, specifically learning from a real-world
+using the `syntharc` package, specifically learning from a real-world
 Excel dataset.
 """
 
@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from data_gen.tabular.evaluation import evaluate_tabular
-from data_gen.tabular.gaussian_copula import GaussianCopulaSynthesizer
+from syntharc.tabular.evaluation import evaluate_tabular
+from syntharc.tabular.gaussian_copula import GaussianCopulaSynthesizer
 
 
 def main() -> None:

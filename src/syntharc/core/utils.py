@@ -1,4 +1,4 @@
-"""Shared utility functions for the data-gen package.
+"""Shared utility functions for the syntharc package.
 
 Provides device detection, reproducibility helpers, and logging setup.
 """
@@ -55,7 +55,7 @@ def set_seed(seed: int) -> None:
 
 
 def setup_logging(level: str = "INFO") -> None:
-    """Configure rich-formatted logging for data-gen.
+    """Configure rich-formatted logging for syntharc.
 
     Uses the ``rich`` library for coloured, structured log output.
     Falls back to basic ``logging`` config if ``rich`` is unavailable
@@ -92,4 +92,4 @@ def setup_logging(level: str = "INFO") -> None:
             force=True,
         )
 
-    logging.getLogger("data_gen").setLevel(numeric_level)
+    logging.getLogger("syntharc").setLevel(numeric_level)

@@ -6,8 +6,8 @@ Validates the full lifecycle: data preparation -> synthesis -> evaluation.
 import numpy as np
 import pandas as pd
 
-from data_gen.timeseries.evaluation import evaluate_timeseries
-from data_gen.timeseries.par import TimeSeriesSynthesizer
+from syntharc.timeseries.evaluation import evaluate_timeseries
+from syntharc.timeseries.par import TimeSeriesSynthesizer
 
 
 def test_timeseries_lifecycle_integration() -> None:

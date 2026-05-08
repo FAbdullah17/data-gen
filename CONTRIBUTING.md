@@ -1,6 +1,6 @@
-# Contributing to data-gen
+# Contributing to syntharc
 
-First off, thank you for considering contributing to `data-gen`! It's people like you that make this tool great. 
+First off, thank you for considering contributing to `syntharc`! It's people like you that make this tool great.
 
 ## 🛠️ Development Setup
 
@@ -8,8 +8,8 @@ To set up a local development environment, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/data-gen.git
-   cd data-gen
+   git clone https://github.com/your-username/syntharc.git
+   cd syntharc
    ```
 
 2. **Create a virtual environment (Optional but Recommended):**
@@ -39,7 +39,7 @@ We use `pytest` for running our test suite. Before submitting any changes, ensur
 pytest tests/
 
 # Run tests with coverage
-pytest tests/ --cov=src/data_gen --cov-report=term-missing
+pytest tests/ --cov=src/syntharc --cov-report=term-missing
 ```
 
 ## 📝 Code Style & Linting
@@ -60,6 +60,6 @@ Our main tools are:
 2. Ensure you have added corresponding tests for your feature or bugfix.
 3. Verify that your tests pass (`pytest`) and code lints cleanly (`pre-commit`).
 4. Update the `CHANGELOG.md` with a summary of your changes.
-5. Create the PR describing the problem you fixed or the feature you added. 
+5. Create the PR describing the problem you fixed or the feature you added.
 
 Thank you for your contribution!

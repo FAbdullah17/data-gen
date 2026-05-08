@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from data_gen.text.markov import MarkovTextGenerator
+from syntharc.text.markov import MarkovTextGenerator
 
 
 class TestMarkovTextGeneratorInit:

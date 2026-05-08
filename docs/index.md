@@ -1,10 +1,10 @@
-# data-gen Documentation
+# syntharc Documentation
 
-Welcome to the official documentation for **data-gen**, a comprehensive Python unified framework for generating synthetic data across multiple domains.
+Welcome to the official documentation for **syntharc**, a comprehensive Python unified framework for generating synthetic data across multiple domains.
 
 ## Overview
 
-`data-gen` is designed to be a one-stop-shop for all your synthetic data and data augmentation needs. It abstracts away the complexity of using different machine learning models and libraries, providing a consistent API built upon a standard synthesizer lifecycle:
+`syntharc` is designed to be a one-stop-shop for all your synthetic data and data augmentation needs. It abstracts away the complexity of using different machine learning models and libraries, providing a consistent API built upon a standard synthesizer lifecycle:
 
 1. **`prepare()`**: Load resources, configure engines, or cache contextual data.
 2. **`fit()`**: Learn patterns from your real-world data.

@@ -11,5 +11,5 @@ def require_albumentations() -> None:
     except ImportError as exc:
         raise ImportError(
             "albumentations and opencv-python are required for ImageAugmentor. "
-            "Install them with: pip install data-gen[image]"
+            "Install them with: pip install syntharc[image]"
         ) from exc

@@ -1,15 +1,15 @@
 """Time-Series Data Generation Example.
 
 This script demonstrates how to generate synthetic chronological
-data using the `data-gen` package, learning from a real-world CSV dataset.
+data using the `syntharc` package, learning from a real-world CSV dataset.
 """
 
 from pathlib import Path
 
 import pandas as pd
 
-from data_gen.timeseries.evaluation import evaluate_timeseries
-from data_gen.timeseries.par import TimeSeriesSynthesizer
+from syntharc.timeseries.evaluation import evaluate_timeseries
+from syntharc.timeseries.par import TimeSeriesSynthesizer
 
 
 def main() -> None:

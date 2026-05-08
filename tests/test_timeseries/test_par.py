@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from data_gen.timeseries.par import TimeSeriesSynthesizer
-from data_gen.timeseries.utils import generate_parametric_sequences
+from syntharc.timeseries.par import TimeSeriesSynthesizer
+from syntharc.timeseries.utils import generate_parametric_sequences
 
 
 @pytest.fixture

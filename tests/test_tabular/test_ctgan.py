@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from data_gen.tabular.ctgan import CTGANSynthesizer
-from data_gen.tabular.utils import generate_from_schema
+from syntharc.tabular.ctgan import CTGANSynthesizer
+from syntharc.tabular.utils import generate_from_schema
 
 
 @pytest.fixture

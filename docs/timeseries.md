@@ -1,6 +1,6 @@
 # Time Series Generation
 
-The `data-gen.timeseries` module produces synthetic sequential and temporal data. It models relationships both chronologically across time increments and structurally across different columns.
+The `syntharc.timeseries` module produces synthetic sequential and temporal data. It models relationships both chronologically across time increments and structurally across different columns.
 
 ## `TimeSeriesSynthesizer`
 
@@ -16,7 +16,7 @@ Time series generation usually contains multiple distinct tracks of time. For ex
 ### Usage Example
 
 ```python
-from data_gen.timeseries.par import TimeSeriesSynthesizer
+from syntharc.timeseries.par import TimeSeriesSynthesizer
 import pandas as pd
 
 # Load longitudinal sequences
@@ -28,9 +28,9 @@ ts_synth = TimeSeriesSynthesizer()
 
 # Fit requires telling the engine how to group historical tracks together
 ts_synth.fit(
-    real_ts_df, 
-    sequence_key='user_id', 
-    context_columns=[] 
+    real_ts_df,
+    sequence_key='user_id',
+    context_columns=[]
 )
 
 # Generate new sequences mimicking chronological rhythms

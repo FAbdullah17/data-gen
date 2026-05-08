@@ -177,6 +177,7 @@ cython_debug/
 .agents/
 .gemini/
 .github/copilot-instructions.md
+.github/
 
 # Examples data and outputs
 examples/**/data/

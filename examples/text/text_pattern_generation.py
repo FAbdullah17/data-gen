@@ -1,14 +1,14 @@
 """Text Data Generation Example.
 
 This script demonstrates how to generate synthetic text using the
-`data-gen` package, learning from a real-world text file (Project Gutenberg).
+`syntharc` package, learning from a real-world text file (Project Gutenberg).
 """
 
 import re
 from pathlib import Path
 
-from data_gen.text.evaluation import evaluate_text
-from data_gen.text.markov import MarkovTextGenerator
+from syntharc.text.evaluation import evaluate_text
+from syntharc.text.markov import MarkovTextGenerator
 
 
 def main() -> None:

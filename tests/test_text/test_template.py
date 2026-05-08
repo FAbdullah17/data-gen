@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from data_gen.text.template import TemplateTextGenerator
+from syntharc.text.template import TemplateTextGenerator
 
 
 class TestTemplateTextGeneratorInit:

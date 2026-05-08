@@ -5,8 +5,8 @@ Validates the full lifecycle: data preparation -> synthesis -> evaluation.
 
 import pandas as pd
 
-from data_gen.tabular.evaluation import evaluate_tabular
-from data_gen.tabular.gaussian_copula import GaussianCopulaSynthesizer
+from syntharc.tabular.evaluation import evaluate_tabular
+from syntharc.tabular.gaussian_copula import GaussianCopulaSynthesizer
 
 
 def test_tabular_lifecycle_integration() -> None:

@@ -15,8 +15,8 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-from data_gen.core.base import BaseSynthesizer
-from data_gen.image.utils import require_albumentations
+from syntharc.core.base import BaseSynthesizer
+from syntharc.image.utils import require_albumentations
 
 
 class ImageAugmentor(BaseSynthesizer):
@@ -310,6 +310,6 @@ class ImageAugmentor(BaseSynthesizer):
         dict[str, Any]
             Quality metrics.
         """
-        from data_gen.image.evaluation import evaluate_images
+        from syntharc.image.evaluation import evaluate_images
 
         return evaluate_images(real_data, synthetic_data)

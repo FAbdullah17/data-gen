@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from data_gen.text.transformer import TransformerTextGenerator
+from syntharc.text.transformer import TransformerTextGenerator
 
 # Create mock modules
 mock_torch = MagicMock()
@@ -28,7 +28,7 @@ class TestTransformerTextGeneratorInit:
 
 
 class TestTransformerTextGeneratorPrepare:
-    @patch("data_gen.text.utils.require_transformers")
+    @patch("syntharc.text.utils.require_transformers")
     def test_prepare_without_data(self, mock_require: MagicMock) -> None:
         with patch.dict("sys.modules", {"torch": mock_torch, "transformers": mock_transformers}):
             gen = TransformerTextGenerator(device="cpu")
@@ -38,7 +38,7 @@ class TestTransformerTextGeneratorPrepare:
             assert gen._context is None
             mock_pipeline_func.assert_called()
 
-    @patch("data_gen.text.utils.require_transformers")
+    @patch("syntharc.text.utils.require_transformers")
     def test_prepare_with_data(self, mock_require: MagicMock) -> None:
         with patch.dict("sys.modules", {"torch": mock_torch, "transformers": mock_transformers}):
             gen = TransformerTextGenerator(device="cpu")
@@ -54,7 +54,7 @@ class TestTransformerTextGeneratorGenerate:
         with pytest.raises(RuntimeError, match="must be prepared"):
             gen.generate(5)
 
-    @patch("data_gen.text.utils.require_transformers")
+    @patch("syntharc.text.utils.require_transformers")
     def test_generate_success(self, mock_require: MagicMock) -> None:
         with patch.dict("sys.modules", {"torch": mock_torch, "transformers": mock_transformers}):
             # Setup mock pipeline to return a fixed string

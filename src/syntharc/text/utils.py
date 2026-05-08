@@ -10,5 +10,5 @@ def require_transformers() -> None:
     except ImportError as exc:
         raise ImportError(
             "transformers are required for TransformerTextGenerator. "
-            "Install them with: pip install data-gen[text]"
+            "Install them with: pip install syntharc[text]"
         ) from exc

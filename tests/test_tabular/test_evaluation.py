@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from data_gen.tabular.evaluation import (
+from syntharc.tabular.evaluation import (
     _column_shape_score,
     _correlation_similarity,
     _cs_test,

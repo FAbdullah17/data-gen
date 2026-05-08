@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-from data_gen.image.augmentor import ImageAugmentor
-from data_gen.image.evaluation import evaluate_images
+from syntharc.image.augmentor import ImageAugmentor
+from syntharc.image.evaluation import evaluate_images
 
 
 def test_image_lifecycle_augmentor(tmp_path: Path) -> None:

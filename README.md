@@ -1,19 +1,19 @@
-# data-gen: The Grand Unified Synthetic Data Generator
+# syntharc: The Grand Unified Synthetic Data Generator
 
-[![CI](https://github.com/your-username/data-gen/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/data-gen/actions/workflows/ci.yml)
-[![PyPI version](https://badge.fury.io/py/data-gen.svg)](https://badge.fury.io/py/data-gen)
-[![Python Versions](https://img.shields.io/pypi/pyversions/data-gen.svg)](https://pypi.org/project/data-gen/)
+[![CI](https://github.com/your-username/syntharc/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/syntharc/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/syntharc.svg)](https://badge.fury.io/py/syntharc)
+[![Python Versions](https://img.shields.io/pypi/pyversions/syntharc.svg)](https://pypi.org/project/syntharc/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**`data-gen`** is a powerful, flexible, and unified Python library for generating high-quality synthetic data across multiple domains. In the modern machine learning ecosystem, acquiring high-quality, privacy-compliant, and diverse datasets is often the biggest bottleneck. `data-gen` solves this by abstracting the complexity of various generative algorithms into a single, intuitive framework.
+**`syntharc`** is a powerful, flexible, and unified Python library for generating high-quality synthetic data across multiple domains. In the modern machine learning ecosystem, acquiring high-quality, privacy-compliant, and diverse datasets is often the biggest bottleneck. `syntharc` solves this by abstracting the complexity of various generative algorithms into a single, intuitive framework.
 
-Whether you need to anonymize sensitive tabular records, augment image operations for computer vision, simulate realistic text sequences, or replicate complex financial time-series signals. `data-gen` provides the unified API to do it all using state-of-the-art backend engines like PyTorch, Hugging Face Transformers, Albumentations, and the Synthetic Data Vault (SDV).
+Whether you need to anonymize sensitive tabular records, augment image operations for computer vision, simulate realistic text sequences, or replicate complex financial time-series signals. `syntharc` provides the unified API to do it all using state-of-the-art backend engines like PyTorch, Hugging Face Transformers, Albumentations, and the Synthetic Data Vault (SDV).
 
 ---
 
 ## 🧠 How It Works: The Unified Lifecycle
 
-One of the biggest hurdles in synthetic data generation is the fragmented tooling across different data types. `data-gen` forces all underlying models into a highly predictable **3-step lifecycle** inherited from our `BaseSynthesizer` architecture:
+One of the biggest hurdles in synthetic data generation is the fragmented tooling across different data types. `syntharc` forces all underlying models into a highly predictable **3-step lifecycle** inherited from our `BaseSynthesizer` architecture:
 
 1. **`prepare(**kwargs)`**: Configures the internal environment. This is where you define structural metadata, column types, sequence keys, or image transformation pipelines to guide the generation.
 2. **`fit(data)`**: Feeds your actual, real-world dataset into the generative model so it can learn patterns, probabilistic distributions, and internal representations.
@@ -23,7 +23,7 @@ One of the biggest hurdles in synthetic data generation is the fragmented toolin
 
 ## 🚀 Key Features
 
-*   📊 **Tabular Data:** Synthesize fully relational datasets using Deep Learning (`CTGANSynthesizer`) or statistical modeling (`GaussianCopulaSynthesizer`). 
+*   📊 **Tabular Data:** Synthesize fully relational datasets using Deep Learning (`CTGANSynthesizer`) or statistical modeling (`GaussianCopulaSynthesizer`).
 *   📝 **Text Generation:** Leverage the power of LLMs (`TransformerSynthesizer`), classic statistical chains (`MarkovSynthesizer`), or strict ruleings (`TemplateSynthesizer`).
 *   🖼️ **Image Augmentation:** Use `ImageAugmentor` to rapidly iterate through spatial and pixel-level augmentations, dynamically expanding computer vision datasets.
 *   📈 **Time-Series:** Employ the `PARSynthesizer` (Probabilistic AutoRegressive model) to safely synthesize robust sequence data over time.
@@ -33,20 +33,20 @@ One of the biggest hurdles in synthetic data generation is the fragmented toolin
 
 ## 📦 Installation
 
-Install `data-gen` via pip. The base package provides the core infrastructure. We highly recommend installing the specific domain dependencies you intend to use to keep your environment lean:
+Install `syntharc` via pip. The base package provides the core infrastructure. We highly recommend installing the specific domain dependencies you intend to use to keep your environment lean:
 
 ```bash
 # Install everything (Recommended for the full experience)
-pip install "data-gen[all]"
+pip install "syntharc[all]"
 
 # Or individually pick your domains:
-pip install "data-gen[tabular]"
-pip install "data-gen[text]"
-pip install "data-gen[image]"
-pip install "data-gen[timeseries]"
+pip install "syntharc[tabular]"
+pip install "syntharc[text]"
+pip install "syntharc[image]"
+pip install "syntharc[timeseries]"
 
 # For contributors and local development:
-pip install "data-gen[dev]"
+pip install "syntharc[dev]"
 ```
 
 ---
@@ -59,7 +59,7 @@ Below are examples of how our unified framework elegantly handles vastly differe
 Train a CTGAN model to learn the distribution of your customer data without saving real identities.
 ```python
 import pandas as pd
-from data_gen.tabular.ctgan import CTGANSynthesizer
+from syntharc.tabular.ctgan import CTGANSynthesizer
 
 real_data = pd.read_csv("customer_data.csv")
 
@@ -78,13 +78,13 @@ print(synthetic_data.head())
 ### 2. Deep Time-Series Generation
 Synthesize sequential metrics, like stock prices or IoT sensor readings, using AutoRegressive modeling.
 ```python
-from data_gen.timeseries.par import PARSynthesizer
+from syntharc.timeseries.par import PARSynthesizer
 
 # 1. Initialize & Prepare
 synth = PARSynthesizer(epochs=25)
 # Define what makes a "sequence" (e.g., separate tracking per 'device_id')
 synth.prepare(metadata_dict={
-    "sequence_key": "device_id", 
+    "sequence_key": "device_id",
     "context_columns": ["region"]
 })
 
@@ -98,7 +98,7 @@ synthetic_series = synth.generate(num_sequences=50)
 ### 3. Causal Text Generation (LLMs)
 Easily utilize Hugging Face causal language models.
 ```python
-from data_gen.text.transformer import TransformerTextGenerator
+from syntharc.text.transformer import TransformerTextGenerator
 
 # 1. Initialize (Downloads SmolLM2-360M-Instruct by default)
 synth = TransformerTextGenerator()
@@ -114,7 +114,7 @@ print(text_output[0])
 ### 4. High-Speed Image Augmentation
 Prepare a pipeline of augmentations to expand your Machine Learning dataset effortlessly.
 ```python
-from data_gen.image.augmentor import ImageAugmentor
+from syntharc.image.augmentor import ImageAugmentor
 import cv2
 
 # 1. Initialize rules
@@ -159,5 +159,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-Made with ❤️ by the data-gen team
-
+Made with ❤️ by the syntharc team

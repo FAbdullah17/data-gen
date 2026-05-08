@@ -1,14 +1,14 @@
 """Image Data Generation Example (Albumentations).
 
 This script demonstrates how to generate synthetic image variations
-using the high-performance Albumentations engine in the `data-gen` package.
+using the high-performance Albumentations engine in the `syntharc` package.
 Optimized for high-throughput generation (handles 50k+ images with ease).
 """
 
 from pathlib import Path
 
-from data_gen.image.augmentor import ImageAugmentor
-from data_gen.image.evaluation import evaluate_images
+from syntharc.image.augmentor import ImageAugmentor
+from syntharc.image.evaluation import evaluate_images
 
 
 def main() -> None:
