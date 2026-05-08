@@ -10,7 +10,7 @@ import random
 import re
 from typing import Any
 
-from data_gen.core.base import BaseSynthesizer
+from syntharc.core.base import BaseSynthesizer
 
 
 class MarkovTextGenerator(BaseSynthesizer):
@@ -198,6 +198,6 @@ class MarkovTextGenerator(BaseSynthesizer):
         dict[str, Any]
             Quality metrics from ``evaluate_text()``.
         """
-        from data_gen.text.evaluation import evaluate_text
+        from syntharc.text.evaluation import evaluate_text
 
         return evaluate_text(real_data, synthetic_data)

@@ -1,6 +1,6 @@
 # Image Data Augmentation
 
-The `data-gen.image` module provides a bulk operational pipeline for mutating and augmenting image datasets. Image data doesn't rely heavily on "fitting", but rather applies parameterized transformations.
+The `syntharc.image` module provides a bulk operational pipeline for mutating and augmenting image datasets. Image data doesn't rely heavily on "fitting", but rather applies parameterized transformations.
 
 ## `ImageAugmentor`
 
@@ -17,7 +17,7 @@ You can configure the behavior of the augmentor purely using the `intensity` pro
 ### Usage Example
 
 ```python
-from data_gen.image.augmentor import ImageAugmentor
+from syntharc.image.augmentor import ImageAugmentor
 from pathlib import Path
 
 # 1. Initialize

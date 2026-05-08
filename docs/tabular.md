@@ -1,6 +1,6 @@
 # Tabular Data Generation
 
-The `data-gen.tabular` module provides statistical and deep learning models to clone your structural tabular data (like CSVs or SQL tables).
+The `syntharc.tabular` module provides statistical and deep learning models to clone your structural tabular data (like CSVs or SQL tables).
 
 ## Available Synthesizers
 
@@ -19,8 +19,8 @@ Uses a Conditional Generative Adversarial Network designed specifically for tabu
 ## Usage Example
 
 ```python
-from data_gen.tabular.gaussian_copula import GaussianCopulaSynthesizer
-from data_gen.tabular.evaluation import evaluate_tabular
+from syntharc.tabular.gaussian_copula import GaussianCopulaSynthesizer
+from syntharc.tabular.evaluation import evaluate_tabular
 import pandas as pd
 
 # Load data

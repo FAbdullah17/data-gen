@@ -11,10 +11,10 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 
-from data_gen.image.augmentor import ImageAugmentor
-from data_gen.tabular.gaussian_copula import GaussianCopulaSynthesizer
-from data_gen.text.template import TemplateTextGenerator
-from data_gen.timeseries.par import TimeSeriesSynthesizer
+from syntharc.image.augmentor import ImageAugmentor
+from syntharc.tabular.gaussian_copula import GaussianCopulaSynthesizer
+from syntharc.text.template import TemplateTextGenerator
+from syntharc.timeseries.par import TimeSeriesSynthesizer
 
 
 def test_grand_unified_pipeline(tmp_path: Path) -> None:

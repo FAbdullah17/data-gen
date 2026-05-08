@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from data_gen.image.augmentor import ImageAugmentor
+from syntharc.image.augmentor import ImageAugmentor
 
 
 @pytest.fixture

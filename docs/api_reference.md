@@ -1,8 +1,8 @@
 # API Reference
 
-The `data-gen` architecture relies heavily on a unified interface abstraction. All functional synthesizers inherit from `BaseSynthesizer`.
+The `syntharc` architecture relies heavily on a unified interface abstraction. All functional synthesizers inherit from `BaseSynthesizer`.
 
-## BaseSynthesizer (`data_gen.core.base`)
+## BaseSynthesizer (`syntharc.core.base`)
 
 `BaseSynthesizer(config: dict | None = None)`
 
@@ -26,10 +26,10 @@ An abstract base class that enforces method chaining and the three-stage lifecyc
 
 ## Evaluation Utilities
 
-Every `data_gen` module contains an `evaluation.py` file exposing functions to score the synthetic distributions:
-*   `data_gen.tabular.evaluation.evaluate_tabular(real, synth)`
-*   `data_gen.image.evaluation.evaluate_images(real, synth)`
-*   `data_gen.text.evaluation.evaluate_text(real, synth)`
-*   `data_gen.timeseries.evaluation.evaluate_timeseries(real, synth)`
+Every `syntharc` module contains an `evaluation.py` file exposing functions to score the synthetic distributions:
+*   `syntharc.tabular.evaluation.evaluate_tabular(real, synth)`
+*   `syntharc.image.evaluation.evaluate_images(real, synth)`
+*   `syntharc.text.evaluation.evaluate_text(real, synth)`
+*   `syntharc.timeseries.evaluation.evaluate_timeseries(real, synth)`
 
 These functions generally return a dictionary of numeric scores denoting distance, similarity bounds, or mathematical overlaps.

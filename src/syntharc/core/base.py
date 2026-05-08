@@ -1,4 +1,4 @@
-"""Base synthesizer abstraction for all data-gen modules.
+"""Base synthesizer abstraction for all syntharc modules.
 
 Provides the ``BaseSynthesizer`` ABC that every generator inherits from.
 The API is split into three lifecycle methods:
@@ -19,7 +19,7 @@ from typing import Any
 
 
 class BaseSynthesizer(ABC):
-    """Abstract base class for all data-gen synthesizers.
+    """Abstract base class for all syntharc synthesizers.
 
     Parameters
     ----------
@@ -36,7 +36,7 @@ class BaseSynthesizer(ABC):
         self.config: dict[str, Any] = config or {}
         self.is_fitted: bool = False
         self.is_prepared: bool = False
-        self._logger: logging.Logger = logging.getLogger(f"data_gen.{self.__class__.__name__}")
+        self._logger: logging.Logger = logging.getLogger(f"syntharc.{self.__class__.__name__}")
 
     # Lifecycle methods
 

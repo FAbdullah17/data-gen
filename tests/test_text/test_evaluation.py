@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from data_gen.text.evaluation import _tokenize, evaluate_text
+from syntharc.text.evaluation import _tokenize, evaluate_text
 
 
 class TestTokenization:

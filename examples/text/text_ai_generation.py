@@ -7,7 +7,7 @@ which uses the `.prepare()` lifecycle.
 
 from pathlib import Path
 
-from data_gen.text.transformer import TransformerTextGenerator
+from syntharc.text.transformer import TransformerTextGenerator
 
 
 def main() -> None:
@@ -47,7 +47,7 @@ def main() -> None:
 
     except ImportError as e:
         print(f"\n[!] SKIPPING TRANSFORMER EXAMPLE: {e}")
-        print("To run this example, please install Transformers/Torch: pip install data-gen[text]")
+        print("To run this example, please install Transformers/Torch: pip install syntharc[text]")
 
 
 if __name__ == "__main__":

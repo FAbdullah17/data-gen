@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from data_gen.image.evaluation import _calculate_ssim_proxy, _get_pixel_stats, evaluate_images
+from syntharc.image.evaluation import _calculate_ssim_proxy, _get_pixel_stats, evaluate_images
 
 
 @pytest.fixture

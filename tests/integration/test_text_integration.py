@@ -3,9 +3,9 @@
 Validates the full lifecycle: text preparation -> synthesis -> evaluation.
 """
 
-from data_gen.text.evaluation import evaluate_text
-from data_gen.text.markov import MarkovTextGenerator
-from data_gen.text.template import TemplateTextGenerator
+from syntharc.text.evaluation import evaluate_text
+from syntharc.text.markov import MarkovTextGenerator
+from syntharc.text.template import TemplateTextGenerator
 
 
 def test_text_lifecycle_markov() -> None:

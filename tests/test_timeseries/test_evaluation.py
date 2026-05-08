@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from data_gen.timeseries.evaluation import (
+from syntharc.timeseries.evaluation import (
     _autocorrelation,
     _mean_std_similarity,
     _sequence_autocorrelation,

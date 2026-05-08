@@ -20,7 +20,7 @@ def require_sdv() -> None:
     except ImportError as exc:
         raise ImportError(
             "SDV is required for tabular synthesis. "
-            "Install it with: pip install data-gen[tabular]"
+            "Install it with: pip install syntharc[tabular]"
         ) from exc
 
 

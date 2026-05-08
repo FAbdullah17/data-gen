@@ -3,7 +3,7 @@ requires = ["setuptools>=69.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "data-gen"
+name = "syntharc"
 version = "0.1.0"
 description = "Unified synthetic data generation for tabular, time-series, image, and text data"
 readme = "README.md"
@@ -14,7 +14,7 @@ authors = [
 ]
 keywords = [
     "synthetic-data",
-    "data-generation",
+    "syntharceration",
     "augmentation",
     "tabular",
     "time-series",
@@ -72,18 +72,18 @@ dev = [
     "types-Pillow",
 ]
 all = [
-    "data-gen[tabular]",
-    "data-gen[timeseries]",
-    "data-gen[image]",
-    "data-gen[text]",
-    "data-gen[dev]",
+    "syntharc[tabular]",
+    "syntharc[timeseries]",
+    "syntharc[image]",
+    "syntharc[text]",
+    "syntharc[dev]",
 ]
 
 [project.urls]
-Homepage = "https://github.com/FAbdullah17/data-gen"
-Repository = "https://github.com/FAbdullah17/data-gen"
-Issues = "https://github.com/FAbdullah17/data-gen/issues"
-Documentation = "https://github.com/FAbdullah17/data-gen/tree/main/docs"
+Homepage = "https://github.com/FAbdullah17/syntharc"
+Repository = "https://github.com/FAbdullah17/syntharc"
+Issues = "https://github.com/FAbdullah17/syntharc/issues"
+Documentation = "https://github.com/FAbdullah17/syntharc/tree/main/docs"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -107,7 +107,7 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["data_gen"]
+known-first-party = ["syntharc"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -115,7 +115,7 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 mypy_path = "src"
-packages = ["data_gen"]
+packages = ["syntharc"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

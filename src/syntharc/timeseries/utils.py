@@ -15,7 +15,7 @@ def require_sdv_timeseries() -> None:
     except ImportError as exc:
         raise ImportError(
             "SDV is required for time-series synthesis. "
-            "Install it with: pip install data-gen[timeseries]"
+            "Install it with: pip install syntharc[timeseries]"
         ) from exc
 
 

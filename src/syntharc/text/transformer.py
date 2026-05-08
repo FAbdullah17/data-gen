@@ -1,6 +1,6 @@
 """Transformer-based text synthesizer using SmolLM2.
 
-Requires the optional `data-gen[text]` dependencies (transformers, torch).
+Requires the optional `syntharc[text]` dependencies (transformers, torch).
 Downloads SmolLM2-360M-Instruct for local inference.
 """
 
@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from data_gen.core.base import BaseSynthesizer
-from data_gen.text.utils import require_transformers
+from syntharc.core.base import BaseSynthesizer
+from syntharc.text.utils import require_transformers
 
 
 class TransformerTextGenerator(BaseSynthesizer):
@@ -201,6 +201,6 @@ class TransformerTextGenerator(BaseSynthesizer):
         dict[str, Any]
             Quality metrics from ``evaluate_text()``.
         """
-        from data_gen.text.evaluation import evaluate_text
+        from syntharc.text.evaluation import evaluate_text
 
         return evaluate_text(real_data, synthetic_data)

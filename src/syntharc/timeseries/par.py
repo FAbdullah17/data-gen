@@ -4,7 +4,7 @@ Wraps SDV's ``PARSynthesizer`` to learn deep generative models for
 multi-sequence time-series data. Requires a sequence identifier
 and can conditionally generate based on context columns.
 
-Requires: ``pip install data-gen[timeseries]``
+Requires: ``pip install syntharc[timeseries]``
 """
 
 from __future__ import annotations
@@ -13,8 +13,8 @@ from typing import Any
 
 import pandas as pd
 
-from data_gen.core.base import BaseSynthesizer
-from data_gen.timeseries.utils import (
+from syntharc.core.base import BaseSynthesizer
+from syntharc.timeseries.utils import (
     generate_parametric_sequences,
     require_sdv_timeseries,
 )
@@ -214,7 +214,7 @@ class TimeSeriesSynthesizer(BaseSynthesizer):
         dict[str, Any]
             Quality metrics from ``evaluate_timeseries()``.
         """
-        from data_gen.timeseries.evaluation import evaluate_timeseries
+        from syntharc.timeseries.evaluation import evaluate_timeseries
 
         return evaluate_timeseries(
             real_data,

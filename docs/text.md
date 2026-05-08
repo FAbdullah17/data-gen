@@ -1,6 +1,6 @@
 # Text Data Generation
 
-The `data-gen.text` module is designed for natural language generation. It offers both lightweight statistical methods and heavy-duty Large Language Models (LLMs).
+The `syntharc.text` module is designed for natural language generation. It offers both lightweight statistical methods and heavy-duty Large Language Models (LLMs).
 
 ## Available Synthesizers
 
@@ -11,7 +11,7 @@ A dependency-free statistical synthesizer that uses internal N-gram probabilitie
 *   **Parameters:** `order` (int) - The n-gram lookback length.
 
 ```python
-from data_gen.text.markov import MarkovTextGenerator
+from syntharc.text.markov import MarkovTextGenerator
 
 generator = MarkovTextGenerator(order=2)
 generator.fit(["List", "of", "real", "sentences", "from", "corpus"])
@@ -28,7 +28,7 @@ Uses a pre-trained causal language model (`SmolLM2-360M-Instruct`) to generate h
 *   **Usage:** Uses `prepare(corpus=...)` to inject stylistic context instead of `fit()`.
 
 ```python
-from data_gen.text.transformer import TransformerTextGenerator
+from syntharc.text.transformer import TransformerTextGenerator
 
 # Initialize and download/load model
 transformer = TransformerTextGenerator()
