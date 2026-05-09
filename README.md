@@ -1,6 +1,6 @@
 # syntharc: The Grand Unified Synthetic Data Generator
 
-[![CI](https://github.com/your-username/syntharc/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/syntharc/actions/workflows/ci.yml)
+[![CI](https://github.com/FAbdullah17/syntharc/actions/workflows/ci.yml/badge.svg)](https://github.com/FAbdullah17/syntharc/actions/workflows/ci.yml)
 [![PyPI version](https://badge.fury.io/py/syntharc.svg)](https://badge.fury.io/py/syntharc)
 [![Python Versions](https://img.shields.io/pypi/pyversions/syntharc.svg)](https://pypi.org/project/syntharc/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
