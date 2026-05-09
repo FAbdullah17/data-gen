@@ -1,8 +1,8 @@
 # syntharc: The Grand Unified Synthetic Data Generator
 
-[![CI](https://github.com/FAbdullah17/syntharc/actions/workflows/ci.yml/badge.svg)](https://github.com/FAbdullah17/syntharc/actions/workflows/ci.yml)
-[![PyPI version](https://badge.fury.io/py/syntharc.svg)](https://badge.fury.io/py/syntharc)
-[![Python Versions](https://img.shields.io/pypi/pyversions/syntharc.svg)](https://pypi.org/project/syntharc/)
+[![CI](https://img.shields.io/github/actions/workflow/status/FAbdullah17/syntharc/ci.yml?branch=main)](https://github.com/FAbdullah17/syntharc/actions/workflows/ci.yml)
+[![PyPI version](https://img.shields.io/pypi/v/syntharc.svg)](https://pypi.org/project/syntharc/)
+[![Python Versions](https://img.shields.io/badge/python-%3E%3D3.10-blue.svg)](https://pypi.org/project/syntharc/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **`syntharc`** is a powerful, flexible, and unified Python library for generating high-quality synthetic data across multiple domains. In the modern machine learning ecosystem, acquiring high-quality, privacy-compliant, and diverse datasets is often the biggest bottleneck. `syntharc` solves this by abstracting the complexity of various generative algorithms into a single, intuitive framework.
