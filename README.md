@@ -11,7 +11,7 @@ Whether you need to anonymize sensitive tabular records, augment image operation
 
 ---
 
-## 🧠 How It Works: The Unified Lifecycle
+## How It Works: The Unified Lifecycle
 
 One of the biggest hurdles in synthetic data generation is the fragmented tooling across different data types. `syntharc` forces all underlying models into a highly predictable **3-step lifecycle** inherited from our `BaseSynthesizer` architecture:
 
@@ -21,17 +21,17 @@ One of the biggest hurdles in synthetic data generation is the fragmented toolin
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
-*   📊 **Tabular Data:** Synthesize fully relational datasets using Deep Learning (`CTGANSynthesizer`) or statistical modeling (`GaussianCopulaSynthesizer`).
-*   📝 **Text Generation:** Leverage the power of LLMs (`TransformerSynthesizer`), classic statistical chains (`MarkovSynthesizer`), or strict ruleings (`TemplateSynthesizer`).
-*   🖼️ **Image Augmentation:** Use `ImageAugmentor` to rapidly iterate through spatial and pixel-level augmentations, dynamically expanding computer vision datasets.
-*   📈 **Time-Series:** Employ the `PARSynthesizer` (Probabilistic AutoRegressive model) to safely synthesize robust sequence data over time.
-*   ✅ **Evaluations:** Built-in tools for evaluating the quality, fidelity, and privacy metrics of your generated data against your source data.
+*   **Tabular Data:** Synthesize fully relational datasets using Deep Learning (`CTGANSynthesizer`) or statistical modeling (`GaussianCopulaSynthesizer`).
+*   **Text Generation:** Leverage the power of LLMs (`TransformerSynthesizer`), classic statistical chains (`MarkovSynthesizer`), or strict ruleings (`TemplateSynthesizer`).
+*   **Image Augmentation:** Use `ImageAugmentor` to rapidly iterate through spatial and pixel-level augmentations, dynamically expanding computer vision datasets.
+*   **Time-Series:** Employ the `PARSynthesizer` (Probabilistic AutoRegressive model) to safely synthesize robust sequence data over time.
+*   **Evaluations:** Built-in tools for evaluating the quality, fidelity, and privacy metrics of your generated data against your source data.
 
 ---
 
-## 📦 Installation
+## Installation
 
 Install `syntharc` via pip. The base package provides the core infrastructure. We highly recommend installing the specific domain dependencies you intend to use to keep your environment lean:
 
@@ -51,7 +51,7 @@ pip install "syntharc[dev]"
 
 ---
 
-## 💡 Comprehensive Quick Start
+## Comprehensive Quick Start
 
 Below are examples of how our unified framework elegantly handles vastly different data constraints.
 
@@ -137,7 +137,7 @@ print(f"Augmented Shape: {augmented_image[0].shape}")
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 For comprehensive guides, parameter references, evaluations, and interactive Jupyter showcase notebooks, please check out the `docs/` folder:
 - [Getting Started](docs/getting_started.md)
@@ -149,14 +149,14 @@ For comprehensive guides, parameter references, evaluations, and interactive Jup
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We love our contributors! If you're interested in adding a new generative model, fixing a bug, or improving the documentation, please refer to our [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions on setting up your local environment, managing dependencies, and passing our CI checks.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-Made with ❤️ by the syntharc team
+Made with ❤️ by the syntharc team.
