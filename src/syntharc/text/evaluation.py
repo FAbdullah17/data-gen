@@ -84,7 +84,7 @@ def evaluate_text(
     mean_r_len = np.mean(real_lengths)
     mean_s_len = np.mean(synth_lengths)
 
-    len_diff = min(abs(mean_r_len - mean_s_len) / (abs(mean_r_len) + 1e-10), 1.0)
+    len_diff = min(float(abs(mean_r_len - mean_s_len) / (abs(mean_r_len) + 1e-10)), 1.0)
     len_sim = float(1.0 - len_diff)
 
     # 4. Overall score (weight overlap and length similarity)

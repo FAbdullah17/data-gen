@@ -8,7 +8,7 @@ jobs:
   build-and-publish:
     name: Build and Publish Wheels
     runs-on: ubuntu-latest
-    
+
     # Required for Trusted Publishing on PyPI
     environment:
       name: pypi

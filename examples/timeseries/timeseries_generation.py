@@ -32,7 +32,9 @@ def main() -> None:
     # Since a 'store' has multiple 'departments', the unique sequence is
     # actually a specific department within a specific store.
     # We will create a composite key for this.
-    real_df["store_dept"] = real_df["store"].astype(str) + "_" + real_df["department"].astype(str)
+    real_df["store_dept"] = (
+        real_df["store"].astype(str).str.cat(real_df["department"].astype(str), sep="_")
+    )
 
     print("\nFitting TimeSeriesSynthesizer (PAR model)...")
     synth = TimeSeriesSynthesizer()
